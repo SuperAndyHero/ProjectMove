@@ -1,0 +1,16 @@
+D:\Documents\ProjectMove\obj\Debug\ProjectMove.csprojAssemblyReference.cache
+D:\Documents\ProjectMove\obj\Debug\ProjectMove.csproj.CoreCompileInputs.cache
+D:\Documents\ProjectMove\obj\Debug\SimpleGame.exe
+D:\Documents\ProjectMove\obj\Debug\SimpleGame.pdb
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\libSDL2-2.0.0.dylib
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\libopenal.1.dylib
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\MonoGame.Framework.dll.config
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\SimpleGame.exe
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\SimpleGame.pdb
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\MonoGame.Framework.dll
+D:\Documents\ProjectMove\obj\Debug\ProjectMove.csproj.CopyComplete
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\Content\Tiles\Gravel.xnb
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\Content\Player\Player.xnb
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\Content\Arial.xnb
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\Content\Arial_Bold.xnb
+D:\Documents\ProjectMove\bin\DesktopGL\AnyCPU\Debug\Content\Debug.xnb

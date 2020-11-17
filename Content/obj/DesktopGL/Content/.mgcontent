@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>D:/Documents/ProjectMove/Content/Arial.spritefont</File>
+    <File>D:/Documents/ProjectMove/Content/Arial_Bold.spritefont</File>
+    <File>D:/Documents/ProjectMove/Content/Debug.png</File>
+    <File>D:/Documents/ProjectMove/Content/Debug1.png</File>
+    <File>D:/Documents/ProjectMove/Content/Gui/MousePointer.png</File>
+    <File>D:/Documents/ProjectMove/Content/Npcs/Dasher.png</File>
+    <File>D:/Documents/ProjectMove/Content/Npcs/Dummy.png</File>
+    <File>D:/Documents/ProjectMove/Content/Npcs/Seeker.png</File>
+    <File>D:/Documents/ProjectMove/Content/Player/Player.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
