@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Design;
+using System.Collections.Generic;
 using System;
 using ProjectMove.Content.Player;
 using ProjectMove.Content.Npcs;
@@ -14,6 +15,23 @@ namespace ProjectMove
 {
     public static class Extensions
     {
+        public static void LoadObjectTextures<T>(this List<T> array, ref Texture2D[] texArray, string directory)
+        {
+            texArray = new Texture2D[array.Count];
+            for (int i = 0; i < array.Count; i++)
+            {
+                try
+                {
+                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>(directory + array[i].GetType().Name);
+                }
+                catch (ContentLoadException)
+                {
+                    System.Diagnostics.Debug.WriteLine("Missing Texture: " + directory + array[i].GetType().Name);
+                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
+                }
+            }
+        }
+
         public static Vector2 Size(this Texture2D texture)               { return new Vector2(texture.Width, texture.Height); }
 
         public static Vector2 Half(this Vector2 vector)                { return vector / 2; }

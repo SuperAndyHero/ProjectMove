@@ -12,17 +12,17 @@ namespace ProjectMove.Content
     public abstract class Entity
     {
         public int index = 0;
-        public Vector2 position =       new Vector2();//this instead of Vector.Zero because the default of vector2 is zero
+        public Vector2 position       = new Vector2();
         
         public Vector2 Center {
             get { return position + size.Half(); }
             set { position = Center - size.Half(); }}
 
-        public Vector2 velocity =       new Vector2();
-        public Vector2 oldPosition =    new Vector2();
-        public Vector2 oldVelocity =    new Vector2();
-        public Vector2 size =           new Vector2();
-        public Vector2 spriteOffset =   new Vector2();
+        public Vector2 velocity       = new Vector2();
+        public Vector2 oldPosition    = new Vector2();
+        public Vector2 oldVelocity    = new Vector2();
+        public Vector2 size           = new Vector2();
+        public Vector2 spriteOffset   = new Vector2();
 
         public Rectangle Rect {
             get { return new Rectangle(position.ToPoint(), size.ToPoint()); }

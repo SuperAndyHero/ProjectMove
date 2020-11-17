@@ -13,8 +13,20 @@
     <File>D:/Documents/ProjectMove/Content/Npcs/Dummy.png</File>
     <File>D:/Documents/ProjectMove/Content/Npcs/Seeker.png</File>
     <File>D:/Documents/ProjectMove/Content/Player/Player.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Air.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Brick.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Dirt.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Grass.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Gravel.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Stone.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

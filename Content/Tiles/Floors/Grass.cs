@@ -11,9 +11,9 @@ using System.Linq;
 using ProjectMove.Content.Npcs.NpcTypes;
 using ProjectMove;
 
-namespace ProjectMove.Content.Tiles.TileTypes
+namespace ProjectMove.Content.Tiles.TileTypes.Floors
 {
-    public class Dirt : TileBase
+    public class Grass : Floorbase
     {
 
     }

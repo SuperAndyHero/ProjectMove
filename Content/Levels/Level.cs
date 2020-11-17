@@ -19,6 +19,7 @@ namespace ProjectMove.Content.Levels
         public static List<LevelBase> Bases;//static list of npc bases, copied(?) from when each npc is created
         public static List<string> LevelInternalNames;
 
+        [Obsolete("TODO: Unexist levels, its just a middle-man")]
         public static void Initialize()
         {
             Bases = new List<LevelBase>();
@@ -35,6 +36,7 @@ namespace ProjectMove.Content.Levels
             }
         }
 
+        [Obsolete("TODO: gameID")]
         public static ushort LevelIdByName(string name)
         {
             ushort index = 0;

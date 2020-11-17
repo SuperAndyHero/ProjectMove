@@ -13,6 +13,7 @@ using ProjectMove.Content.Npcs;
 using ProjectMove.Content.Levels;
 using ProjectMove.Content.Tiles;
 using ProjectMove.Content.Tiles.TileTypes;
+using ProjectMove.Content.Tiles.TileTypes.Walls;
 using static ProjectMove.GameID;
 
 namespace ProjectMove
@@ -31,7 +32,12 @@ namespace ProjectMove
             get => level.size;
         }
 
-        public Tile[,] tile;
+        //these each share the same tile object, however they each have their own ID sets
+        public Tile[,] objectGrid;
+
+        public Tile[,] wallGrid;
+
+        public Tile[,] floorGrid;
 
         public void Initialize()
         {
@@ -41,7 +47,9 @@ namespace ProjectMove
             //set the current level, placeholder for now
             level = new Level(LevelHandler.LevelIdByName("DebugScene"));
 
-            tile = new Tile[level.size.X, level.size.Y];//initialize the tile array
+            objectGrid = new Tile[level.size.X, level.size.Y];//initialize the tile array
+            wallGrid = new Tile[level.size.X, level.size.Y];//initialize the tile array
+            floorGrid = new Tile[level.size.X, level.size.Y];//initialize the tile array
 
             GenerateWorld();
 
@@ -82,7 +90,7 @@ namespace ProjectMove
             {
                 for (int j = 0; j < Size.Y; j++)
                 {
-                    tile[i, j].Draw(spriteBatch, i, j);
+                    wallGrid[i, j].Draw(spriteBatch, i, j);
                 }
             }
         }
@@ -91,7 +99,7 @@ namespace ProjectMove
 
         public bool IsTileInWorld(Point tileCoordPoint)
         {
-            if (tileCoordPoint.X >= 0 && tileCoordPoint.Y >= 0 && tileCoordPoint.X < tile.GetLength(0) && tileCoordPoint.Y < tile.GetLength(1))
+            if (tileCoordPoint.X >= 0 && tileCoordPoint.Y >= 0 && tileCoordPoint.X < wallGrid.GetLength(0) && tileCoordPoint.Y < wallGrid.GetLength(1))
             {
                 return true;
             }
@@ -115,7 +123,7 @@ namespace ProjectMove
             {
                 for (int j = 0; j < Size.Y; j++)
                 {
-                    tile[i, j] = new Tile(type);
+                    wallGrid[i, j] = new Tile(type);
                 }
             }
         }
@@ -124,7 +132,7 @@ namespace ProjectMove
         {
             if (IsTileInWorld(position.ToPoint()))
             {
-                tile[(int)position.X, (int)position.Y] = new Tile(type);
+                wallGrid[(int)position.X, (int)position.Y] = new Tile(type);
             }
         }
 
@@ -132,7 +140,7 @@ namespace ProjectMove
         {
             if (IsTileInWorld(position))
             {
-                tile[position.X, position.Y] = new Tile(type);
+                wallGrid[position.X, position.Y] = new Tile(type);
             }
         }
 
@@ -140,7 +148,7 @@ namespace ProjectMove
         {
             if (IsTileInWorld(new Point(posX, posY)))
             {
-                tile[posX, posY] = new Tile(type);
+                wallGrid[posX, posY] = new Tile(type);
             }
         }
     }

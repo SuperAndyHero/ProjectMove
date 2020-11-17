@@ -11,7 +11,7 @@ using System.Linq;
 using ProjectMove.Content.Npcs.NpcTypes;
 using ProjectMove;
 
-namespace ProjectMove.Content.Tiles.TileTypes
+namespace ProjectMove.Content.Tiles.TileTypes.Floor
 {
     public class Air : TileBase
     {

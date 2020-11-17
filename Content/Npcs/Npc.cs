@@ -63,6 +63,7 @@ namespace ProjectMove.Content.Npcs
             }
         }
 
+        [Obsolete("TODO: gameID")]
         public static ushort NpcIdByName(string name)
         {
             ushort index = 0;

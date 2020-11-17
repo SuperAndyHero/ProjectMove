@@ -12,6 +12,7 @@ using ProjectMove.Content.Npcs;
 using ProjectMove;
 using ProjectMove.Content.Tiles;
 using ProjectMove.Content.Tiles.TileTypes;
+using ProjectMove.Content.Tiles.TileTypes.Walls;
 
 namespace ProjectMove.Content.Levels.LevelTypes
 {

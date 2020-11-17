@@ -37,3 +37,9 @@ D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Npcs\Dasher.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Npcs\Dummy.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Npcs\Seeker.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Gui\MousePointer.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Air.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Brick.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Dirt.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Grass.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Gravel.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Stone.xnb

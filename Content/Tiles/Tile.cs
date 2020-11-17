@@ -18,13 +18,11 @@ namespace ProjectMove.Content.Tiles
     public static class TileHandler
     {
         public const int tileSize = 32;
+        public const string tileTextureLocation = "Tiles/Textures/";
 
         public static List<TileBase> TileBases;//static list, read directly from by tiles since nothing needs to be stored per-tile
         public static List<ObjectBase> ObjectBases;
         public static List<Floorbase> FloorBases;
-
-
-        public static List<string> TileInternalNames;
 
         public static Texture2D[] TileTexture;
         public static Texture2D[] ObjectTexture;
@@ -33,35 +31,44 @@ namespace ProjectMove.Content.Tiles
         public static void Initialize()
         {
             TileBases = new List<TileBase>();
+            ObjectBases = new List<ObjectBase>();
+            FloorBases = new List<Floorbase>();
 
             TileID = new Dictionary<Type, ushort>();
             ObjectID = new Dictionary<Type, ushort>();
             FloorID = new Dictionary<Type, ushort>();
 
-            TileInternalNames = new List<string>();
-
+            //tiles can be at any location, but the textures must be in tiles/textures
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
-                      .Where(t => t.Namespace == "ProjectMove.Content.Tiles.TileTypes")
+                      .Where(t => t.Namespace.Length >= 35 && t.Namespace.Substring(0, 35)  == "ProjectMove.Content.Tiles.TileTypes" && t.IsClass && !t.IsAbstract)
                       .ToList();
 
             for (ushort i = 0; i < TypeList.Count; i++)
             {
                 Type type = TypeList[i];
-                if(type == typeof(TileBase))
+                if(type.IsSubclassOf(typeof(TileBase)))//would have used a switch case if a could
                 {
                     TileBases.Add((TileBase)Activator.CreateInstance(type));
                     TileID.Add(type, i);
                 }
-                
-                TileBases.Add((TileBase)Activator.CreateInstance(type));
-                TileID.Add(type, i);
-                TileInternalNames.Add(type.Name);
+                else if(type.IsSubclassOf(typeof(ObjectBase)))
+                {
+                    ObjectBases.Add((ObjectBase)Activator.CreateInstance(type));
+                    ObjectID.Add(type, i);
+                }
+                else if(type.IsSubclassOf(typeof(Floorbase)))
+                {
+                    FloorBases.Add((Floorbase)Activator.CreateInstance(type));
+                    FloorID.Add(type, i);
+                }
             }
         }
 
         public static void LoadTileTextures()
         {
-            GameMain.LoadObjectTextures(ref TileTexture, ref TileInternalNames, "Tiles/");
+            TileBases.LoadObjectTextures(ref TileTexture, tileTextureLocation);
+            ObjectBases.LoadObjectTextures(ref ObjectTexture, tileTextureLocation);
+            FloorBases.LoadObjectTextures(ref FloorTexture, tileTextureLocation);
         }
 
         #region obsolete
@@ -92,18 +99,18 @@ namespace ProjectMove.Content.Tiles
         [Obsolete("This method is deprecated, use the non-static version of this method in world instead")]
         public static void PlaceTile(ref World world, ushort type, Vector2 position)
         {
-            if (position.X < world.tile.GetLength(0) && position.Y < world.tile.GetLength(1))//is within bounds
+            if (position.X < world.wallGrid.GetLength(0) && position.Y < world.wallGrid.GetLength(1))//is within bounds
             {
-                world.tile[(int)position.X, (int)position.Y] = new Tile(type);
+                world.wallGrid[(int)position.X, (int)position.Y] = new Tile(type);
             }
         }
 
         [Obsolete("This method is deprecated, use the non-static version of this method in world instead")]
         public static void PlaceTile(ref World world, ushort type, Point position)
         {
-            if (position.X < world.tile.GetLength(0) && position.Y < world.tile.GetLength(1))//is within bounds
+            if (position.X < world.wallGrid.GetLength(0) && position.Y < world.wallGrid.GetLength(1))//is within bounds
             {
-                world.tile[position.X, position.Y] = new Tile(type);
+                world.wallGrid[position.X, position.Y] = new Tile(type);
             }
         }
         #endregion
@@ -157,10 +164,10 @@ namespace ProjectMove.Content.Tiles
         public void Draw(SpriteBatch spriteBatch, int i, int j)//default drawing
         {
             Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
+            Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
 
             if (Base.Draw(spriteBatch, i, j))//if this tile should be drawn
             {
-                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
                 spriteBatch.Draw(TileHandler.TileTexture[type], tileRect.WorldToScreenCoords(), Color.White);
             }
 

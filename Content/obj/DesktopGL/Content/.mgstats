@@ -8,3 +8,9 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Documents/ProjectMove/Content/Npcs/Dummy.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Npcs/Dummy.xnb","TextureProcessor","Texture2DContent",185,341,0.0016371
 "D:/Documents/ProjectMove/Content/Npcs/Seeker.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Npcs/Seeker.xnb","TextureProcessor","Texture2DContent",180,341,0.0010008
 "D:/Documents/ProjectMove/Content/Player/Player.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Player/Player.xnb","TextureProcessor","Texture2DContent",610,18517,0.0053751
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Air.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Air.xnb","TextureProcessor","Texture2DContent",127,101,0.1986022
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Brick.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Brick.xnb","TextureProcessor","Texture2DContent",339,1109,0.0018669
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Dirt.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Dirt.xnb","TextureProcessor","Texture2DContent",228,1109,0.0013812
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Grass.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Grass.xnb","TextureProcessor","Texture2DContent",276,1109,0.0012603
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Gravel.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Gravel.xnb","TextureProcessor","Texture2DContent",277,1109,0.0019543
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Stone.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Stone.xnb","TextureProcessor","Texture2DContent",247,1109,0.0015575

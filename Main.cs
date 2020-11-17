@@ -12,6 +12,7 @@ using ProjectMove.Content.Tiles;
 using System.Collections.Generic;
 using ProjectMove.Content.Gui;
 using ProjectMove.Content.Tiles.TileTypes;
+using ProjectMove.Content.Tiles.TileTypes.Walls;
 using static ProjectMove.GameID;
 
 namespace ProjectMove
@@ -115,6 +116,7 @@ namespace ProjectMove
             base.LoadContent();
         }
 
+        [Obsolete("Use extension instead")]
         public static void LoadObjectTextures(ref Texture2D[] texArray, ref List<string> nameArray, string directory)
         {
             texArray = new Texture2D[nameArray.Count];
@@ -221,6 +223,8 @@ namespace ProjectMove
             if (debug)//fps
             {
                 spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(1f / gameTime.ElapsedGameTime.TotalSeconds, 1).ToString(), ScreenSize / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+                //spriteBatch.DrawString(font_Arial, "FPS: " + (1f / gameTime.ElapsedGameTime.TotalSeconds).ToString(), ScreenSize / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+
             }
 
             #region mouse
@@ -237,9 +241,9 @@ namespace ProjectMove
 
             Point tileCoord = mousePos.ScreenToTileCoords();
 
-            if(TileHandler.IsPointWithinArray(tileCoord, ref mainWorld.tile))
+            if(mainWorld.IsTileInWorld(tileCoord))
             {
-                string tileName = TileHandler.TileInternalNames[mainWorld.tile[tileCoord.X, tileCoord.Y].type];
+                string tileName = TileHandler.TileBases[mainWorld.wallGrid[tileCoord.X, tileCoord.Y].type].GetType().Name;
                 Vector2 tileNameOffset = font_Arial.MeasureString(tileName);
 
                 spriteBatch.DrawString(font_Arial, tileName, mousePos.ToVector2(), Color.White, default, new Vector2(tileNameOffset.X / 2.5f, tileNameOffset.Y), 1f, default, default);

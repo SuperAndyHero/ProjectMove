@@ -11,10 +11,11 @@ using System.Linq;
 using ProjectMove.Content.Npcs.NpcTypes;
 using ProjectMove;
 
-namespace ProjectMove.Content.Tiles.TileTypes
+namespace ProjectMove.Content.Tiles.TileTypes.Walls
 {
-    public class Stone : TileBase
+    public class Air : TileBase
     {
-
+        public override bool Draw(SpriteBatch spriteBatch, int i, int j) => false;
+        public override bool IsSolid() => false;
     }
 }
