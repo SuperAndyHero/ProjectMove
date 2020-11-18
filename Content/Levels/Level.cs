@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Linq;
 using ProjectMove.Content.Npcs.NpcTypes;
 using ProjectMove;
+using static ProjectMove.GameID;
 
 namespace ProjectMove.Content.Levels
 {
@@ -19,41 +20,45 @@ namespace ProjectMove.Content.Levels
         public static List<LevelBase> Bases;//static list of npc bases, copied(?) from when each npc is created
         public static List<string> LevelInternalNames;
 
-        [Obsolete("TODO: Unexist levels, its just a middle-man")]
         public static void Initialize()
         {
             Bases = new List<LevelBase>();
-            LevelInternalNames = new List<string>();
+
+            LevelID = new Dictionary<Type, ushort>();
 
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
-                      .Where(t => t.Namespace == "ProjectMove.Content.Levels.LevelTypes" && t.IsSubclassOf(typeof(LevelBase)))
+                      .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(LevelBase)) && t.Namespace == "ProjectMove.Content.Levels.LevelTypes")
                       .ToList();
 
-            foreach (Type type in TypeList)
+            for (ushort i = 0; i < TypeList.Count; i++)
             {
+                Type type = TypeList[i];
+
                 Bases.Add((LevelBase)Activator.CreateInstance(type));
-                LevelInternalNames.Add(type.Name);
+                LevelID.Add(type, i);
             }
         }
 
-        [Obsolete("TODO: gameID")]
-        public static ushort LevelIdByName(string name)
+        public static void LoadLevelTextures()
         {
-            ushort index = 0;
-            foreach (string str in LevelInternalNames)
-            {
-                if (str == name)
-                    return index;
-                index++;
-            }
-            return 0;
+
         }
+
+        //public static ushort LevelIdByName(string name)
+        //{
+        //    ushort index = 0;
+        //    foreach (string str in LevelInternalNames)
+        //    {
+        //        if (str == name)
+        //            return index;
+        //        index++;
+        //    }
+        //    return 0;
+        //}
     }
 
-    public abstract class LevelBase
+    public abstract class LevelBase//there is no level object, just the base which is directly used by the world
     {
-        public Level level;
-
         /// <summary>
         /// Called before everything, as this is created
         /// </summary>
@@ -74,42 +79,14 @@ namespace ProjectMove.Content.Levels
         /// <summary>
         /// A update hook for per-level extra effects
         /// </summary>
-        public virtual void ExtraUpdate() { }
+        public virtual void Update() { }
 
         /// <summary>
         /// A draw hook for per-level extra vfx
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public virtual void ExtraDraw(SpriteBatch spriteBatch) { }
+        public virtual void Draw(SpriteBatch spriteBatch) { }
 
         public virtual Point Size() => new Point(4);
-    }
-
-    public class Level//TODO level object can be eleminated, and the world object can take it's place
-    {
-        public Level(ushort levelType)//this stuff is done via the ctor, the npc doesn't do this
-        {
-            type = levelType;
-            levelBase = LevelHandler.Bases[type];
-            levelBase.level = this;
-            levelBase.Initialize();
-            size = levelBase.Size();//fallback size
-        }
-
-        public LevelBase levelBase;
-
-        public readonly ushort type;
-
-        public Point size;
-
-        #region dummy methods
-        public void Worldgen(World world) => levelBase.Worldgen(world);
-
-        public void Setup(World world) => levelBase.Setup(world);
-
-        public void Update() => levelBase.ExtraUpdate();
-
-        public void Draw(SpriteBatch spriteBatch) => levelBase.ExtraDraw(spriteBatch);
-        #endregion    
     }
 }

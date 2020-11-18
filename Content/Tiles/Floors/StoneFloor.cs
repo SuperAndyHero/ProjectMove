@@ -13,8 +13,8 @@ using ProjectMove;
 
 namespace ProjectMove.Content.Tiles.TileTypes.Floors
 {
-    public class Stone : TileBase
+    public class StoneFloor : FloorBase
     {
-
+        public override string TextureName() => "Stone";
     }
 }

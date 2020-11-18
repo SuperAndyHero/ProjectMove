@@ -25,22 +25,22 @@ namespace ProjectMove.Content.Npcs
         public static void Initialize()
         {
             Bases = new List<NpcBase>();
-            NpcInternalNames = new List<string>();
 
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
                       .Where(t => t.Namespace == "ProjectMove.Content.Npcs.NpcTypes" && t.IsSubclassOf(typeof(NpcBase)))
                       .ToList();
 
-            foreach(Type type in TypeList)
+            for (ushort i = 0; i < TypeList.Count; i++)
             {
+                Type type = TypeList[i];
+
                 Bases.Add((NpcBase)Activator.CreateInstance(type));
-                NpcInternalNames.Add(type.Name);
             }
         }
 
         public static void LoadNpcTextures()
         {
-            GameMain.LoadObjectTextures(ref NpcTexture, ref NpcInternalNames, "Npcs/");
+            Bases.LoadObjectTextures(ref NpcTexture, "Npcs/");
         }
 
         [Obsolete("TODO: make a world-side version of this")]
@@ -80,7 +80,7 @@ namespace ProjectMove.Content.Npcs
 
     #region npc base
     //this class is tightly coupled to the npc class, and is instanced alongside every npc instance
-    public abstract class NpcBase //its is the "brain" of the npc
+    public abstract class NpcBase : DefaultBase //its is the "brain" of the npc
     {
         //public NpcBase Instance { get; set; }
 

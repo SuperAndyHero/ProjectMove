@@ -13,20 +13,23 @@ using System.Collections.Generic;
 using System.Reflection;
 using ProjectMove.Content.Tiles.TileTypes;
 using System.Linq;
+using ProjectMove.Content.Levels;
 
 namespace ProjectMove
 {
     public static class GameID
     {
-        public static Dictionary<Type, ushort> TileID;//initalized in TileHandler; the same place this is set
-        public static Dictionary<Type, ushort> ObjectID;
+        public static Dictionary<Type, ushort> WallID;//initalized in TileHandler; the same place this is set
+        public static Dictionary<Type, ushort> ObjectID;//these could be one list, but are not for performance sake
         public static Dictionary<Type, ushort> FloorID;
 
+        public static Dictionary<Type, ushort> LevelID;
 
 
-        public static ushort GetTileID<T>() where T : TileBase
+
+        public static ushort GetWallID<T>() where T : WallBase
         {
-            return TileID[typeof(T)];
+            return WallID[typeof(T)];
         }
 
         public static ushort GetObjectID<T>() where T : ObjectBase
@@ -34,9 +37,14 @@ namespace ProjectMove
             return ObjectID[typeof(T)];
         }
 
-        public static ushort GetFloorID<T>() where T : ObjectBase
+        public static ushort GetFloorID<T>() where T : FloorBase
         {
             return FloorID[typeof(T)];
+        }
+
+        public static ushort GetLevelID<T>() where T : LevelBase
+        {
+            return LevelID[typeof(T)];
         }
     }
 }

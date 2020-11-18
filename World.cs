@@ -14,14 +14,17 @@ using ProjectMove.Content.Levels;
 using ProjectMove.Content.Tiles;
 using ProjectMove.Content.Tiles.TileTypes;
 using ProjectMove.Content.Tiles.TileTypes.Walls;
+using ProjectMove.Content.Levels.LevelTypes;
 using static ProjectMove.GameID;
+using ProjectMove.Content.Tiles.TileTypes.Floor;
+using ProjectMove.Content.Tiles.TileTypes.Objects;
 
 namespace ProjectMove
 {
     //global stuff
     public class World//a static instance of this is made in gamemain
     {
-        public Level level;
+        public LevelBase level;
 
         public Player player;
 
@@ -29,15 +32,22 @@ namespace ProjectMove
 
         public Point Size
         {
-            get => level.size;
+            get => level.Size();
         }
 
         //these each share the same tile object, however they each have their own ID sets
-        public Tile[,] objectGrid;
+        public ObjectTile[,] objectLayer;
 
-        public Tile[,] wallGrid;
+        public WallTile[,] wallLayer;
 
-        public Tile[,] floorGrid;
+        public FloorTile[,] floorLayer;
+
+        public enum TileLayer
+        {
+            Object,
+            Wall,
+            Floor
+        }
 
         public void Initialize()
         {
@@ -45,11 +55,11 @@ namespace ProjectMove
             npcs = new List<Npc>();
 
             //set the current level, placeholder for now
-            level = new Level(LevelHandler.LevelIdByName("DebugScene"));
+            level = LevelHandler.Bases[GetLevelID<DebugScene>()];
 
-            objectGrid = new Tile[level.size.X, level.size.Y];//initialize the tile array
-            wallGrid = new Tile[level.size.X, level.size.Y];//initialize the tile array
-            floorGrid = new Tile[level.size.X, level.size.Y];//initialize the tile array
+            objectLayer = new ObjectTile[Size.X, Size.Y];
+            wallLayer = new WallTile[Size.X, Size.Y];
+            floorLayer = new FloorTile[Size.X, Size.Y];
 
             GenerateWorld();
 
@@ -58,6 +68,7 @@ namespace ProjectMove
 
             level.Setup(this);
         }
+
 
         public void Update()
         {
@@ -72,34 +83,48 @@ namespace ProjectMove
                 GameMain.cameraPosition = player.position.ToPoint() - GameMain.ScreenSize.Half().ToPoint();
         }
 
+
         public void Draw(SpriteBatch spriteBatch)
         {
-            DrawTiles(spriteBatch);
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
+                    floorLayer[i, j].Draw(spriteBatch, i, j);
+                    wallLayer[i, j].Draw(spriteBatch, i, j);
+                    objectLayer[i, j].Draw(spriteBatch, i, j); } }
 
             foreach (Npc npc in npcs)
                 npc.Draw(spriteBatch);
 
             player.Draw(spriteBatch);
 
-            level.Draw(spriteBatch);//after for special vfx, may split this into multiple methods as needed
-        }
-
-        private void DrawTiles(SpriteBatch spriteBatch)//iterates over every tile in the array and draws it
-        {
             for (int i = 0; i < Size.X; i++)
             {
                 for (int j = 0; j < Size.Y; j++)
                 {
-                    wallGrid[i, j].Draw(spriteBatch, i, j);
+                    floorLayer[i, j].PostDraw(spriteBatch, i, j);
+                    wallLayer[i, j].PostDraw(spriteBatch, i, j);
+                    objectLayer[i, j].PostDraw(spriteBatch, i, j);
                 }
             }
+
+            level.Draw(spriteBatch);//after for special vfx, may split this into multiple methods as needed
         }
+
 
 
 
         public bool IsTileInWorld(Point tileCoordPoint)
         {
-            if (tileCoordPoint.X >= 0 && tileCoordPoint.Y >= 0 && tileCoordPoint.X < wallGrid.GetLength(0) && tileCoordPoint.Y < wallGrid.GetLength(1))
+            if (tileCoordPoint.X >= 0 && tileCoordPoint.Y >= 0 && tileCoordPoint.X < Size.X && tileCoordPoint.Y < Size.Y)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsTileInWorld(int x, int y)
+        {
+            if (x >= 0 && y >= 0 && x < Size.X && y < Size.Y)
             {
                 return true;
             }
@@ -114,41 +139,48 @@ namespace ProjectMove
 
         public void ClearWorld()
         {
-            FillWorld(GetTileID<Air>());//air seems to be at index 0 anyway, but to be sure
+            FillLayer(GetFloorID<AirFloor>(), (int)TileLayer.Floor);//air seems to be at index 0 anyway, but to be sure
+            FillLayer(GetWallID<AirWall>(), (int)TileLayer.Wall);
+            FillLayer(GetObjectID<AirObject>(), (int)TileLayer.Object);
         }
 
-        public void FillWorld(ushort type)
+        public void FillLayer(ushort type, int layer)
         {
             for (int i = 0; i < Size.X; i++)
             {
                 for (int j = 0; j < Size.Y; j++)
                 {
-                    wallGrid[i, j] = new Tile(type);
+                    PlaceTile(type, i, j, layer);
                 }
             }
         }
 
-        public void PlaceTile(ushort type, Vector2 position)
+        public void PlaceTile(ushort type, Vector2 position, int layer)
         {
-            if (IsTileInWorld(position.ToPoint()))
-            {
-                wallGrid[(int)position.X, (int)position.Y] = new Tile(type);
-            }
+            PlaceTile(type, (int)position.X, (int)position.Y, layer);
         }
 
-        public void PlaceTile(ushort type, Point position)
+        public void PlaceTile(ushort type, Point position, int layer)
         {
-            if (IsTileInWorld(position))
-            {
-                wallGrid[position.X, position.Y] = new Tile(type);
-            }
+            PlaceTile(type, position.X, position.Y, layer);
         }
 
-        public void PlaceTile(ushort type, int posX, int posY)
+        public void PlaceTile(ushort type, int posX, int posY, int layer)
         {
-            if (IsTileInWorld(new Point(posX, posY)))
+            if (IsTileInWorld(posX, posY))
             {
-                wallGrid[posX, posY] = new Tile(type);
+                switch (layer)
+                {
+                    case (int)TileLayer.Floor:
+                        floorLayer[posX, posY] = new FloorTile(type);
+                        break;
+                    case (int)TileLayer.Wall:
+                        wallLayer[posX, posY] = new WallTile(type);
+                        break;
+                    case (int)TileLayer.Object:
+                        objectLayer[posX, posY] = new ObjectTile(type);
+                        break;
+                }
             }
         }
     }

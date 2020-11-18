@@ -13,10 +13,12 @@ using ProjectMove;
 
 namespace ProjectMove.Content.Tiles.TileTypes.Objects
 {
-    public class AirObject : ObjectBase
+    public class Desk : ObjectBase
     {
-        public override bool Draw(SpriteBatch spriteBatch, int i, int j) => false;
-        public override bool IsSolid() => false;
-        public override string TextureName() => "Air";
+        public override Rectangle DrawRect()
+        {
+            return new Rectangle(Point.Zero, new Point(TileHandler.tileSize, TileHandler.tileSize + 6));//do something to make tiles auto-clip up (redo tile side and take image size into account)
+            //also TODO: draw half of objects before the player (ones that are above) and half after, and add a pre-draw method to bypass this
+        }
     }
 }

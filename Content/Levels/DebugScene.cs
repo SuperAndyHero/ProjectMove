@@ -27,14 +27,14 @@ namespace ProjectMove.Content.Levels.LevelTypes
 
         public override void Worldgen(World world)
         {
-            ushort type = GameID.GetTileID<Stone>();
-            ushort type2 = GameID.GetTileID<Air>();
+            ushort type = GameID.GetWallID<StoneWall>();
+            ushort type2 = GameID.GetWallID<AirWall>();
             for (int i = 0; i < world.Size.X; i++)
             {
                 for (int j = 0; j < world.Size.Y; j++)
                 {
                     //if(GameMain.random.NextBool())
-                        world.PlaceTile(i > 8 ? type : type2, i, j);
+                        world.PlaceTile(i > 8 ? type : type2, i, j, (int)World.TileLayer.Wall);
 
                     //ushort type = (ushort)GameMain.random.Next(TileHandler.TileInternalNames.Count);
                     //world.PlaceTile(type, i, j);

@@ -13,9 +13,10 @@ using ProjectMove;
 
 namespace ProjectMove.Content.Tiles.TileTypes.Walls
 {
-    public class Air : TileBase
+    public class AirWall : WallBase
     {
         public override bool Draw(SpriteBatch spriteBatch, int i, int j) => false;
         public override bool IsSolid() => false;
+        public override string TextureName() => "Air";
     }
 }

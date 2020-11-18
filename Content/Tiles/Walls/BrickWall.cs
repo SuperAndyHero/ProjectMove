@@ -13,8 +13,10 @@ using ProjectMove;
 
 namespace ProjectMove.Content.Tiles.TileTypes.Walls
 {
-    public class Brick : TileBase
+    public class BrickWall : WallBase
     {
+        public override string TextureName() => "Brick";
+
         //public override Rectangle[] CollisionRect()
         //{
         //    //return new Rectangle[2] { 

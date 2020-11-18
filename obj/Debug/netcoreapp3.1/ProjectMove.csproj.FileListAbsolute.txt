@@ -43,3 +43,4 @@ D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Dirt.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Grass.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Gravel.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Stone.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Desk.xnb

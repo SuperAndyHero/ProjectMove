@@ -20,53 +20,59 @@ namespace ProjectMove.Content.Tiles
         public const int tileSize = 32;
         public const string tileTextureLocation = "Tiles/Textures/";
 
-        public static List<TileBase> TileBases;//static list, read directly from by tiles since nothing needs to be stored per-tile
+        public static List<WallBase> WallBases;//static list, read directly from by tiles since nothing needs to be stored per-tile
         public static List<ObjectBase> ObjectBases;
-        public static List<Floorbase> FloorBases;
+        public static List<FloorBase> FloorBases;
 
-        public static Texture2D[] TileTexture;
+        public static Texture2D[] WallTexture;
         public static Texture2D[] ObjectTexture;
         public static Texture2D[] FloorTexture;
 
         public static void Initialize()
         {
-            TileBases = new List<TileBase>();
+            WallBases = new List<WallBase>();
             ObjectBases = new List<ObjectBase>();
-            FloorBases = new List<Floorbase>();
+            FloorBases = new List<FloorBase>();
 
-            TileID = new Dictionary<Type, ushort>();
+            WallID = new Dictionary<Type, ushort>();
             ObjectID = new Dictionary<Type, ushort>();
             FloorID = new Dictionary<Type, ushort>();
 
             //tiles can be at any location, but the textures must be in tiles/textures
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
-                      .Where(t => t.Namespace.Length >= 35 && t.Namespace.Substring(0, 35)  == "ProjectMove.Content.Tiles.TileTypes" && t.IsClass && !t.IsAbstract)
+                      .Where(t => t.IsClass && !t.IsAbstract && t.Namespace.Contains("ProjectMove.Content.Tiles.TileTypes"))
                       .ToList();
 
-            for (ushort i = 0; i < TypeList.Count; i++)
+            ushort objectCount = 0;
+            ushort wallCount = 0;
+            ushort floorCount = 0;
+
+            foreach (Type type in TypeList)
             {
-                Type type = TypeList[i];
-                if(type.IsSubclassOf(typeof(TileBase)))//would have used a switch case if a could
-                {
-                    TileBases.Add((TileBase)Activator.CreateInstance(type));
-                    TileID.Add(type, i);
-                }
-                else if(type.IsSubclassOf(typeof(ObjectBase)))
+                if (type.IsSubclassOf(typeof(ObjectBase)))
                 {
                     ObjectBases.Add((ObjectBase)Activator.CreateInstance(type));
-                    ObjectID.Add(type, i);
+                    ObjectID.Add(type, objectCount);
+                    objectCount++;
                 }
-                else if(type.IsSubclassOf(typeof(Floorbase)))
+                else if (type.IsSubclassOf(typeof(WallBase)))//would have used a switch case if a could
                 {
-                    FloorBases.Add((Floorbase)Activator.CreateInstance(type));
-                    FloorID.Add(type, i);
+                    WallBases.Add((WallBase)Activator.CreateInstance(type));
+                    WallID.Add(type, wallCount);
+                    wallCount++;
+                }
+                else if(type.IsSubclassOf(typeof(FloorBase)))
+                {
+                    FloorBases.Add((FloorBase)Activator.CreateInstance(type));
+                    FloorID.Add(type, floorCount);
+                    floorCount++;
                 }
             }
         }
 
         public static void LoadTileTextures()
         {
-            TileBases.LoadObjectTextures(ref TileTexture, tileTextureLocation);
+            WallBases.LoadObjectTextures(ref WallTexture, tileTextureLocation);
             ObjectBases.LoadObjectTextures(ref ObjectTexture, tileTextureLocation);
             FloorBases.LoadObjectTextures(ref FloorTexture, tileTextureLocation);
         }
@@ -87,7 +93,7 @@ namespace ProjectMove.Content.Tiles
         //}
 
         [Obsolete("use IsPointInWorld on world side")]
-        public static bool IsPointWithinArray(Point tileCoordPoint, ref Tile[,] array)
+        public static bool IsPointWithinArray(Point tileCoordPoint, ref WallTile[,] array)
         {
             if (tileCoordPoint.X >= 0 && tileCoordPoint.Y >= 0 && tileCoordPoint.X < array.GetLength(0) && tileCoordPoint.Y < array.GetLength(1))
             {
@@ -99,29 +105,31 @@ namespace ProjectMove.Content.Tiles
         [Obsolete("This method is deprecated, use the non-static version of this method in world instead")]
         public static void PlaceTile(ref World world, ushort type, Vector2 position)
         {
-            if (position.X < world.wallGrid.GetLength(0) && position.Y < world.wallGrid.GetLength(1))//is within bounds
+            if (position.X < world.wallLayer.GetLength(0) && position.Y < world.wallLayer.GetLength(1))//is within bounds
             {
-                world.wallGrid[(int)position.X, (int)position.Y] = new Tile(type);
+                world.wallLayer[(int)position.X, (int)position.Y] = new WallTile(type);
             }
         }
 
         [Obsolete("This method is deprecated, use the non-static version of this method in world instead")]
         public static void PlaceTile(ref World world, ushort type, Point position)
         {
-            if (position.X < world.wallGrid.GetLength(0) && position.Y < world.wallGrid.GetLength(1))//is within bounds
+            if (position.X < world.wallLayer.GetLength(0) && position.Y < world.wallLayer.GetLength(1))//is within bounds
             {
-                world.wallGrid[position.X, position.Y] = new Tile(type);
+                world.wallLayer[position.X, position.Y] = new WallTile(type);
             }
         }
         #endregion
     }
 
 
-    public abstract class TileBase
+    public abstract class TileDefaultBase : DefaultBase
     {
         public virtual bool IsSolid() => true;
 
         public virtual bool Draw(SpriteBatch spriteBatch, int i, int j) { return true; }
+
+        public virtual void PostDraw(SpriteBatch spriteBatch, int i, int j) { }
 
         /// <summary>
         /// rect position is relative to tile position
@@ -136,54 +144,118 @@ namespace ProjectMove.Content.Tiles
         /// <returns></returns>
         public virtual Rectangle DrawRect() { return DefaultRect; }
 
-
+        /// <summary>
+        /// Name of the texture to load, uses class name if null
+        /// </summary>
+        /// <returns></returns>
 
         public Rectangle DefaultRect { get => new Rectangle(Point.Zero, new Point(TileHandler.tileSize)); }
     }
 
-
-    public abstract class ObjectBase : TileBase
+    public abstract class WallBase : TileDefaultBase
     {
-
+        public virtual int C() { return 9; }
     }
 
-    public abstract class Floorbase : TileBase
+    public abstract class ObjectBase : TileDefaultBase
     {
+        public virtual int B() { return 7; }
+    }
 
+    public abstract class FloorBase : TileDefaultBase
+    {
+        public virtual int A() { return 5; }
     }
 
 
-    //tile object
-    public struct Tile
-    {
-        public Tile(ushort tileType = 0) { type = tileType; }
-        public TileBase Base { get => TileHandler.TileBases[type]; }
 
+
+    public struct ObjectTile
+    {
+        public ObjectTile(ushort tileType = 0) { type = tileType; }
+        public ObjectBase Base { get => TileHandler.ObjectBases[type]; }
         public ushort type;
-
-        public void Draw(SpriteBatch spriteBatch, int i, int j)//default drawing
-        {
-            Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
-            Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
-
-            if (Base.Draw(spriteBatch, i, j))//if this tile should be drawn
-            {
-                spriteBatch.Draw(TileHandler.TileTexture[type], tileRect.WorldToScreenCoords(), Color.White);
+        public void Draw(SpriteBatch spriteBatch, int i, int j){//default drawing
+            if (Base.Draw(spriteBatch, i, j)){//if this tile should be drawn
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
+                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
+                spriteBatch.Draw(TileHandler.ObjectTexture[type], tileRect.WorldToScreenCoords(), Color.White);
             }
-
-            if (GameMain.debug)//DEBUG
-            {
-                //spriteBatch.Draw(GameMain.debugTexture, tileRect.WorldToScreenCoords(), new Color(i * 16, j * 16, 0));
-
-                foreach (Rectangle rect in Base.CollisionRect())
-                {
-                    Rectangle collisionRect = new Rectangle(rect.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect.Size);
-                    spriteBatch.Draw(GameMain.debugTexture, collisionRect.WorldToScreenCoords(), new Color(i * 16, j * 16, 0));
+        }
+        public void PostDraw(SpriteBatch spriteBatch, int i, int j){
+            Base.PostDraw(spriteBatch, i, j);
+            if (GameMain.debug){//DEBUG
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
+                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
+                if (Base.IsSolid()){
+                    foreach (Rectangle rect in Base.CollisionRect()){
+                        Rectangle collisionRect = new Rectangle(rect.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect.Size);
+                        spriteBatch.Draw(GameMain.debugTexture, collisionRect.WorldToScreenCoords(), new Color(i * 16, j * 16, 0));
+                    }
                 }
-
                 string str = type.ToString();
                 Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(str);
-                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, tileRect.Center.WorldToScreenCoords(), Color.White, default, new Vector2(textSize.X / 2, textSize.Y / 2), 1, default, default);
+                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, (tileRect.Center + new Point(TileHandler.tileSize / 4)).WorldToScreenCoords(), Color.Red, default, new Vector2(textSize.X / 2, textSize.Y / 2), 1, default, default);
+            }
+        }
+    }
+
+    public struct WallTile
+    {
+        public WallTile(ushort tileType = 0) { type = tileType; }
+        public WallBase Base { get => TileHandler.WallBases[type]; }
+        public ushort type;
+        public void Draw(SpriteBatch spriteBatch, int i, int j){//default drawing
+            if (Base.Draw(spriteBatch, i, j)){//if this tile should be drawn
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
+                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
+                spriteBatch.Draw(TileHandler.WallTexture[type], tileRect.WorldToScreenCoords(), Color.White);
+            }
+        }
+        public void PostDraw(SpriteBatch spriteBatch, int i, int j) {
+            Base.PostDraw(spriteBatch, i, j);
+            if (GameMain.debug){//DEBUG
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
+                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
+                if (Base.IsSolid()){
+                    foreach (Rectangle rect in Base.CollisionRect()){
+                        Rectangle collisionRect = new Rectangle(rect.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect.Size);
+                        spriteBatch.Draw(GameMain.debugTexture, collisionRect.WorldToScreenCoords(), new Color(i * 16, j * 16, 0));
+                    }
+                }
+                string str = type.ToString();
+                Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(str);
+                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, tileRect.Center.WorldToScreenCoords(), Color.Blue, default, new Vector2(textSize.X / 2, textSize.Y / 2), 1, default, default);
+            }
+        }
+    }
+
+    public struct FloorTile
+    {
+        public FloorTile(ushort tileType = 0) { type = tileType; }
+        public FloorBase Base { get => TileHandler.FloorBases[type]; }
+        public ushort type;
+        public void Draw(SpriteBatch spriteBatch, int i, int j){//default drawing
+            if (Base.Draw(spriteBatch, i, j)){//if this tile should be drawn
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
+                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
+                spriteBatch.Draw(TileHandler.FloorTexture[type], tileRect.WorldToScreenCoords(), Color.White);
+            }
+        }
+        public void PostDraw(SpriteBatch spriteBatch, int i, int j){
+            Base.PostDraw(spriteBatch, i, j);
+            if (GameMain.debug){//DEBUG
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
+                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
+                if (Base.IsSolid()){
+                    foreach (Rectangle rect in Base.CollisionRect()){
+                        Rectangle collisionRect = new Rectangle(rect.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect.Size);
+                        spriteBatch.Draw(GameMain.debugTexture, collisionRect.WorldToScreenCoords(), new Color(i * 16, j * 16, 0));
+                    }
+                }
+                string str = type.ToString();
+                Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(str);
+                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, (tileRect.Center - new Point(TileHandler.tileSize / 4)).WorldToScreenCoords(), Color.Green, default, new Vector2(textSize.X / 2, textSize.Y / 2), 1, default, default);
             }
         }
     }

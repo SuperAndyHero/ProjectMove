@@ -108,9 +108,9 @@ namespace ProjectMove.Content.Player
                 for (int j = -1; j < 2; j++)
                 {
                     Point currentTilePos = centerTile + new Point(i, j);
-                    if(TileHandler.IsPointWithinArray(currentTilePos, ref currentWorld.wallGrid))
+                    if(TileHandler.IsPointWithinArray(currentTilePos, ref currentWorld.wallLayer))
                     {
-                        Tile tile = currentWorld.wallGrid[currentTilePos.X, currentTilePos.Y];
+                        WallTile tile = currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y];
                         if (tile.Base.IsSolid())
                         {
                             foreach (Rectangle tileRect in tile.Base.CollisionRect())
@@ -198,9 +198,9 @@ namespace ProjectMove.Content.Player
                     for (int j = -1; j < 2; j++)
                     {
                         Point tilePos = Center.WorldToTileCoords() + new Point(i, j);
-                        if (TileHandler.IsPointWithinArray(tilePos, ref currentWorld.wallGrid))
+                        if (TileHandler.IsPointWithinArray(tilePos, ref currentWorld.wallLayer))
                         {
-                            Tile tile = currentWorld.wallGrid[tilePos.X, tilePos.Y];
+                            WallTile tile = currentWorld.wallLayer[tilePos.X, tilePos.Y];
                             if (tile.Base.IsSolid())
                             {
                                 spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(0, j * 16, i * 16));

@@ -13,7 +13,7 @@ using ProjectMove;
 
 namespace ProjectMove.Content.Tiles.TileTypes.Floors
 {
-    public class Dirt : TileBase
+    public class Dirt : FloorBase
     {
 
     }

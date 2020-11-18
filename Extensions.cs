@@ -10,23 +10,25 @@ using ProjectMove.Content.Player;
 using ProjectMove.Content.Npcs;
 using ProjectMove.Content.Tiles;
 using System.ComponentModel;
+using ProjectMove.Content;
 
 namespace ProjectMove
 {
     public static class Extensions
     {
-        public static void LoadObjectTextures<T>(this List<T> array, ref Texture2D[] texArray, string directory)
+        public static void LoadObjectTextures<T>(this List<T> list, ref Texture2D[] texArray, string directory) where T : DefaultBase
         {
-            texArray = new Texture2D[array.Count];
-            for (int i = 0; i < array.Count; i++)
+            texArray = new Texture2D[list.Count];
+            for (int i = 0; i < list.Count; i++)
             {
+                string location = directory + (list[i].TextureName() ?? list[i].GetType().Name);
                 try
                 {
-                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>(directory + array[i].GetType().Name);
+                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>(location);
                 }
                 catch (ContentLoadException)
                 {
-                    System.Diagnostics.Debug.WriteLine("Missing Texture: " + directory + array[i].GetType().Name);
+                    System.Diagnostics.Debug.WriteLine("Missing Texture: " + location);
                     texArray[i] = GameMain.Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
                 }
             }

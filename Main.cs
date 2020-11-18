@@ -14,6 +14,7 @@ using ProjectMove.Content.Gui;
 using ProjectMove.Content.Tiles.TileTypes;
 using ProjectMove.Content.Tiles.TileTypes.Walls;
 using static ProjectMove.GameID;
+using ProjectMove.Content.Tiles.TileTypes.Objects;
 
 namespace ProjectMove
 {
@@ -184,11 +185,12 @@ namespace ProjectMove
                         //ushort tileType = TileHandler.TileID[typeof(Brick)];
 
                         //way used, just pass the class you want the ID of, uses a dict to find the ID
-                        mainWorld.PlaceTile(GetTileID<Brick>(), tileCoord);
+                        //mainWorld.PlaceTile(GetWallID<BrickWall>(), tileCoord, (int)World.TileLayer.Wall);
+                        mainWorld.PlaceTile(GetObjectID<Desk>(), tileCoord, (int)World.TileLayer.Object);
                     }
                     else if (mouseState.RightButton == ButtonState.Pressed)
                     {
-                        mainWorld.PlaceTile(GetTileID<Air>(), tileCoord);
+                        mainWorld.PlaceTile(GetWallID<AirWall>(), tileCoord, (int)World.TileLayer.Wall);
                     }
                 }
             }
@@ -243,7 +245,8 @@ namespace ProjectMove
 
             if(mainWorld.IsTileInWorld(tileCoord))
             {
-                string tileName = TileHandler.TileBases[mainWorld.wallGrid[tileCoord.X, tileCoord.Y].type].GetType().Name;
+                //string tileName = TileHandler.WallBases[mainWorld.wallLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
+                string tileName = TileHandler.ObjectBases[mainWorld.objectLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
                 Vector2 tileNameOffset = font_Arial.MeasureString(tileName);
 
                 spriteBatch.DrawString(font_Arial, tileName, mousePos.ToVector2(), Color.White, default, new Vector2(tileNameOffset.X / 2.5f, tileNameOffset.Y), 1f, default, default);

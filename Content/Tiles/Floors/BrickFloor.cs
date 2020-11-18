@@ -13,14 +13,8 @@ using ProjectMove;
 
 namespace ProjectMove.Content.Tiles.TileTypes.Floors
 {
-    public class Brick : TileBase
+    public class BrickFloor : FloorBase
     {
-        //public override Rectangle[] CollisionRect()
-        //{
-        //    //return new Rectangle[2] { 
-        //    //    new Rectangle(Point.Zero, new Point(TileHandler.tileSize / 2, 0)), 
-        //    //    new Rectangle(new Point(0, TileHandler.tileSize / 2), new Point(TileHandler.tileSize, TileHandler.tileSize / 2)) };
-        //    return new Rectangle[1] { new Rectangle(new Point(-TileHandler.tileSize / 4), new Point((int)(TileHandler.tileSize * 1.5f))) };
-        //}
+        public override string TextureName() => "Brick";
     }
 }
