@@ -17,7 +17,7 @@ namespace ProjectMove.Content.Tiles
 {
     public static class TileHandler
     {
-        public const int tileSize = 32;
+        public const int tileSize = 32;//2X sprite size, because of text issues at lower resolutions
         public const string tileTextureLocation = "Tiles/Textures/";
 
         public static List<WallBase> WallBases;//static list, read directly from by tiles since nothing needs to be stored per-tile
@@ -152,6 +152,8 @@ namespace ProjectMove.Content.Tiles
         public Rectangle DefaultRect { get => new Rectangle(Point.Zero, new Point(TileHandler.tileSize)); }
     }
 
+
+
     public abstract class WallBase : TileDefaultBase
     {
         public virtual int C() { return 9; }
@@ -165,9 +167,8 @@ namespace ProjectMove.Content.Tiles
     public abstract class FloorBase : TileDefaultBase
     {
         public virtual int A() { return 5; }
+        public virtual new bool IsSolid() => false;
     }
-
-
 
 
     public struct ObjectTile
@@ -175,11 +176,14 @@ namespace ProjectMove.Content.Tiles
         public ObjectTile(ushort tileType = 0) { type = tileType; }
         public ObjectBase Base { get => TileHandler.ObjectBases[type]; }
         public ushort type;
-        public void Draw(SpriteBatch spriteBatch, int i, int j){//default drawing
-            if (Base.Draw(spriteBatch, i, j)){//if this tile should be drawn
+        public void Draw(SpriteBatch spriteBatch, int i, int j)
+        {//default drawing
+            if (Base.Draw(spriteBatch, i, j))
+            {//if this tile should be drawn
                 Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
-                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
-                spriteBatch.Draw(TileHandler.ObjectTexture[type], tileRect.WorldToScreenCoords(), Color.White);
+                Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize))/* * GameMain.zoom*/;
+                Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize)/* * GameMain.zoom*/;
+                spriteBatch.Draw(TileHandler.ObjectTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
             }
         }
         public void PostDraw(SpriteBatch spriteBatch, int i, int j){
@@ -195,7 +199,7 @@ namespace ProjectMove.Content.Tiles
                 }
                 string str = type.ToString();
                 Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(str);
-                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, (tileRect.Center + new Point(TileHandler.tileSize / 4)).WorldToScreenCoords(), Color.Red, default, new Vector2(textSize.X / 2, textSize.Y / 2), 1, default, default);
+                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, (tileRect.Center + new Point(TileHandler.tileSize / 4)).WorldToScreenCoords(), Color.Red, default, textSize / 2, 1f, default, default);
             }
         }
     }
@@ -208,8 +212,9 @@ namespace ProjectMove.Content.Tiles
         public void Draw(SpriteBatch spriteBatch, int i, int j){//default drawing
             if (Base.Draw(spriteBatch, i, j)){//if this tile should be drawn
                 Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
-                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
-                spriteBatch.Draw(TileHandler.WallTexture[type], tileRect.WorldToScreenCoords(), Color.White);
+                Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize))/* * GameMain.zoom*/;
+                Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize)/* * GameMain.zoom*/;
+                spriteBatch.Draw(TileHandler.WallTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
             }
         }
         public void PostDraw(SpriteBatch spriteBatch, int i, int j) {
@@ -225,7 +230,7 @@ namespace ProjectMove.Content.Tiles
                 }
                 string str = type.ToString();
                 Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(str);
-                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, tileRect.Center.WorldToScreenCoords(), Color.Blue, default, new Vector2(textSize.X / 2, textSize.Y / 2), 1, default, default);
+                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, tileRect.Center.WorldToScreenCoords(), Color.Blue, default, textSize / 2, 1f, default, default);
             }
         }
     }
@@ -235,11 +240,14 @@ namespace ProjectMove.Content.Tiles
         public FloorTile(ushort tileType = 0) { type = tileType; }
         public FloorBase Base { get => TileHandler.FloorBases[type]; }
         public ushort type;
-        public void Draw(SpriteBatch spriteBatch, int i, int j){//default drawing
-            if (Base.Draw(spriteBatch, i, j)){//if this tile should be drawn
+        public void Draw(SpriteBatch spriteBatch, int i, int j)
+        {//default drawing
+            if (Base.Draw(spriteBatch, i, j))
+            {//if this tile should be drawn
                 Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
-                Rectangle tileRect = new Rectangle(rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize), rect1.Size);
-                spriteBatch.Draw(TileHandler.FloorTexture[type], tileRect.WorldToScreenCoords(), Color.White);
+                Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize))/* * GameMain.zoom*/;
+                Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize)/* * GameMain.zoom*/;
+                spriteBatch.Draw(TileHandler.FloorTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
             }
         }
         public void PostDraw(SpriteBatch spriteBatch, int i, int j){
@@ -255,7 +263,7 @@ namespace ProjectMove.Content.Tiles
                 }
                 string str = type.ToString();
                 Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(str);
-                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, (tileRect.Center - new Point(TileHandler.tileSize / 4)).WorldToScreenCoords(), Color.Green, default, new Vector2(textSize.X / 2, textSize.Y / 2), 1, default, default);
+                spriteBatch.DrawString(GameMain.font_Arial_Bold, str, (tileRect.Center - new Point(TileHandler.tileSize / 4)).WorldToScreenCoords(), Color.Green, default, textSize / 2, 1f, default, default);
             }
         }
     }

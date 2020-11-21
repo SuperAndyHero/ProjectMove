@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>D:/Documents/ProjectMove/Content/Effects/Zoom.fx</SourceFile>
+  <SourceTime>2020-11-20T03:54:49.6601209-06:00</SourceTime>
+  <DestFile>D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Effects/Zoom.xnb</DestFile>
+  <DestTime>2020-11-20T03:54:53.1281267-06:00</DestTime>
+  <Importer>EffectImporter</Importer>
+  <ImporterTime>2020-08-10T16:17:54-05:00</ImporterTime>
+  <Processor>EffectProcessor</Processor>
+  <ProcessorTime>2020-08-10T16:17:54-05:00</ProcessorTime>
+  <Parameters>
+    <Key>DebugMode</Key>
+    <Value>Auto</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

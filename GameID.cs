@@ -25,6 +25,8 @@ namespace ProjectMove
 
         public static Dictionary<Type, ushort> LevelID;
 
+        public static Dictionary<Type, ushort> NpcID;
+
 
 
         public static ushort GetWallID<T>() where T : WallBase
@@ -45,6 +47,11 @@ namespace ProjectMove
         public static ushort GetLevelID<T>() where T : LevelBase
         {
             return LevelID[typeof(T)];
+        }
+
+        public static ushort GetNpcID<T>() where T : NpcBase
+        {
+            return NpcID[typeof(T)];
         }
     }
 }

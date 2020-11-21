@@ -1,8 +1,9 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"D:/Documents/ProjectMove/Content/Arial.spritefont","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Arial.xnb","FontDescriptionProcessor","SpriteFontContent",2008,21538,0.2691885
-"D:/Documents/ProjectMove/Content/Arial_Bold.spritefont","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Arial_Bold.xnb","FontDescriptionProcessor","SpriteFontContent",2014,21538,0.0315209
+"D:/Documents/ProjectMove/Content/Arial.spritefont","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Arial.xnb","FontDescriptionProcessor","SpriteFontContent",2008,21538,0.2005679
+"D:/Documents/ProjectMove/Content/Arial_Bold.spritefont","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Arial_Bold.xnb","FontDescriptionProcessor","SpriteFontContent",2014,21538,0.0152425
 "D:/Documents/ProjectMove/Content/Debug.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Debug.xnb","TextureProcessor","Texture2DContent",140,1109,0.0142795
 "D:/Documents/ProjectMove/Content/Debug1.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Debug1.xnb","TextureProcessor","Texture2DContent",203,1109,0.1206459
+"D:/Documents/ProjectMove/Content/Effects/Zoom.fx","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Effects/Zoom.xnb","EffectProcessor","CompiledEffectContent",411,880,0.3686831
 "D:/Documents/ProjectMove/Content/Gui/MousePointer.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Gui/MousePointer.xnb","TextureProcessor","Texture2DContent",226,569,0.215014
 "D:/Documents/ProjectMove/Content/Npcs/Dasher.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Npcs/Dasher.xnb","TextureProcessor","Texture2DContent",208,341,0.1998376
 "D:/Documents/ProjectMove/Content/Npcs/Dummy.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Npcs/Dummy.xnb","TextureProcessor","Texture2DContent",185,341,0.0016371

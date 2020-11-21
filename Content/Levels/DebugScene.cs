@@ -13,6 +13,7 @@ using ProjectMove;
 using ProjectMove.Content.Tiles;
 using ProjectMove.Content.Tiles.TileTypes;
 using ProjectMove.Content.Tiles.TileTypes.Walls;
+using ProjectMove.Content.Npcs.NpcTypes;
 
 namespace ProjectMove.Content.Levels.LevelTypes
 {
@@ -44,11 +45,7 @@ namespace ProjectMove.Content.Levels.LevelTypes
 
         public override void Setup(World world)
         {
-            //spawning npcs, move these to where the world is setup later
-            //NpcHandler.NewNpc(NpcHandler.NpcIdByName("Dasher"), Vector2.Zero, Vector2.Zero);
-            //NpcHandler.NewNpc(NpcHandler.NpcIdByName("Seeker"), Vector2.Zero, Vector2.Zero);
-            //NpcHandler.SpawnNpc(ref world, NpcHandler.NpcIdByName("Seeker"), GameMain.ScreenSize.Half(), Vector2.Zero);//spawning a dummy
-
+            world.SpawnNpc(GameID.GetNpcID<Seeker>(), GameMain.ScreenSize.ToVector2() / 2, Vector2.Zero);
 
             world.player.position = Size().TileToWorldCoords().ToVector2() / 2;
         }

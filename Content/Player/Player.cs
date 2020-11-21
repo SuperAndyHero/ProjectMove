@@ -177,12 +177,12 @@ namespace ProjectMove.Content.Player
         {
             Rectangle playerFrame = new Rectangle(Frame.ToPoint(), FrameSize.ToPoint());
             //sprite
-            spriteBatch.Draw(GameMain.playerTexture, Center.WorldToScreenCoords(), playerFrame, Color.White, default, FrameSize.Half(), 2f, default, default);
+            spriteBatch.Draw(GameMain.playerTexture, (Center/* * GameMain.zoom*/).WorldToScreenCoords(), playerFrame, Color.White, default, FrameSize.Half(), GameMain.spriteScaling/* * GameMain.zoom*/, default, default);
 
             //health text
             string healthStr = health.ToString();
             Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(healthStr);
-            spriteBatch.DrawString(GameMain.font_Arial_Bold, healthStr, Rect.Center.WorldToScreenCoords(), Color.White, default, new Vector2(textSize.X / 2, textSize.Y + size.Y / 2), 1, default, default);
+            spriteBatch.DrawString(GameMain.font_Arial_Bold, healthStr, Rect.Center.WorldToScreenCoords(), Color.White, default, new Vector2(textSize.X / 2, textSize.Y + size.Y / 2), 1f, default, default);
 
             //debug
             if (GameMain.debug)

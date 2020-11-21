@@ -80,7 +80,7 @@ namespace ProjectMove
             player.Update();
 
             if(!GameMain.lockCamera)
-                GameMain.cameraPosition = player.position.ToPoint() - GameMain.ScreenSize.Half().ToPoint();
+                GameMain.cameraPosition = (player.position.ToPoint() - GameMain.ScreenSize.Half())/*.MultBy(GameMain.zoom)*/;
         }
 
 
@@ -111,6 +111,22 @@ namespace ProjectMove
         }
 
 
+        public Npc SpawnNpc(ushort type, Vector2 position, Vector2 velocity)
+        {
+            if (npcs.Count <= NpcHandler.MaxNpcs)
+            {
+                npcs.Insert(0, new Npc
+                {
+                    type = type,
+                    position = position,
+                    velocity = velocity,
+                    npcBase = NpcHandler.Bases[type]
+                });
+                npcs[0].Initialize();
+                return npcs[0];
+            }
+            return null;
+        }
 
 
         public bool IsTileInWorld(Point tileCoordPoint)

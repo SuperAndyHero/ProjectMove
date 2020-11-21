@@ -44,7 +44,11 @@ namespace ProjectMove
 
         public static Point MultBy(this Point point, int value)          { return new Point(point.X * value, point.Y * value); }
 
+        public static Point MultBy(this Point point, float value) { return new Point((int)(point.X * value), (int)(point.Y * value)); }
+
         public static Point DivideBy(this Point point, int value)        { return new Point(point.X / value, point.Y / value); }
+
+        public static Point DivideBy(this Point point, float value) { return new Point((int)(point.X / value), (int)(point.Y / value)); }
 
         #region vector control
         public static float ToRotation(this Vector2 v)                   { return (float)Math.Atan2((double)v.Y, (double)v.X); }
@@ -81,9 +85,9 @@ namespace ProjectMove
         
 
 
-        public static Point ScreenToWorldCoords(this Point point)          { return point + GameMain.cameraPosition; }
+        public static Point ScreenToWorldCoords(this Point point)         { return (point - GameMain.ScreenSize.Half()).DivideBy(GameMain.zoom) + GameMain.ScreenSize.Half() + GameMain.cameraPosition; }
 
-        public static Vector2 ScreenToWorldCoords(this Vector2 vector)     { return vector + GameMain.cameraPosition.ToVector2(); }
+        public static Vector2 ScreenToWorldCoords(this Vector2 vector)     { return ((vector - GameMain.ScreenSize.Half().ToVector2()) / GameMain.zoom) + GameMain.ScreenSize.Half().ToVector2() + GameMain.cameraPosition.ToVector2(); }
 
 
 
@@ -93,9 +97,9 @@ namespace ProjectMove
 
 
 
-        public static Point ScreenToTileCoords(this Point point)           { return (point + GameMain.cameraPosition).DivideBy(TileHandler.tileSize); }
+        public static Point ScreenToTileCoords(this Point point)           { return point.ScreenToWorldCoords().DivideBy(TileHandler.tileSize); }
 
-        public static Vector2 ScreenToTileCoords(this Vector2 vector)      { return (vector + GameMain.cameraPosition.ToVector2()) / TileHandler.tileSize; }
+        public static Vector2 ScreenToTileCoords(this Vector2 vector)      { return vector.ScreenToWorldCoords() / TileHandler.tileSize; }
 
 
 

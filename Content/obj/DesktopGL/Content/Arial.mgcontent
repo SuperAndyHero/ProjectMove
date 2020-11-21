@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>D:/Documents/ProjectMove/Content/Arial.spritefont</SourceFile>
-  <SourceTime>2020-10-14T06:01:52.5332306-05:00</SourceTime>
+  <SourceTime>2020-11-20T07:24:17.1562638-06:00</SourceTime>
   <DestFile>D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Arial.xnb</DestFile>
-  <DestTime>2020-10-30T14:20:47.9684317-05:00</DestTime>
+  <DestTime>2020-11-20T07:24:26.752824-06:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54-05:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

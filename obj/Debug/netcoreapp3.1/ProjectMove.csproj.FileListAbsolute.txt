@@ -44,3 +44,4 @@ D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Grass.xn
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Gravel.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Stone.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Desk.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Effects\Zoom.xnb

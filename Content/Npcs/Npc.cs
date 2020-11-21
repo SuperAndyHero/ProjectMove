@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Linq;
 using ProjectMove.Content.Npcs.NpcTypes;
 using ProjectMove;
+using static ProjectMove.GameID;
 
 namespace ProjectMove.Content.Npcs
 {
@@ -18,7 +19,6 @@ namespace ProjectMove.Content.Npcs
     {
         public const int MaxNpcs = 200;
         public static List<NpcBase> Bases;//static list of npc bases, copied(?) from when each npc is created
-        public static List<string> NpcInternalNames;
 
         public static Texture2D[] NpcTexture;
 
@@ -26,8 +26,10 @@ namespace ProjectMove.Content.Npcs
         {
             Bases = new List<NpcBase>();
 
+            NpcID = new Dictionary<Type, ushort>();
+
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
-                      .Where(t => t.Namespace == "ProjectMove.Content.Npcs.NpcTypes" && t.IsSubclassOf(typeof(NpcBase)))
+                      .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(NpcBase)) && t.Namespace == "ProjectMove.Content.Npcs.NpcTypes")
                       .ToList();
 
             for (ushort i = 0; i < TypeList.Count; i++)
@@ -35,6 +37,7 @@ namespace ProjectMove.Content.Npcs
                 Type type = TypeList[i];
 
                 Bases.Add((NpcBase)Activator.CreateInstance(type));
+                NpcID.Add(type, i);
             }
         }
 
@@ -61,19 +64,6 @@ namespace ProjectMove.Content.Npcs
                 //Npcs[index].Initialize();//cant find correct index after adding, so its initalized before
                 //maybe replace with array to solve this...
             }
-        }
-
-        [Obsolete("TODO: gameID")]
-        public static ushort NpcIdByName(string name)
-        {
-            ushort index = 0;
-            foreach(string str in NpcInternalNames)
-            {
-                if (str == name)
-                    return index;
-                index++;
-            }
-            return 0;
         }
     }
     #endregion
@@ -118,7 +108,7 @@ namespace ProjectMove.Content.Npcs
             npcBase.Setup();//setup methods on the npc base
 
             if (displayName == null)//if the display name was not set in the npc base this falls back to the class-name
-                displayName = NpcHandler.NpcInternalNames[type];
+                displayName = NpcHandler.Bases[type].GetType().Name;
 
             health = maxHealth;//spawns at max health   Add a post-setup method later here to get around this
 
@@ -129,8 +119,6 @@ namespace ProjectMove.Content.Npcs
         {
             npcBase.AI();//the ai is on the npc bases side
 
-
-
             //standard stuff for every npc
 
             //check collision here?
@@ -140,7 +128,6 @@ namespace ProjectMove.Content.Npcs
             {
                 velocity = Vector2.Zero;
             }
-
             //increase health by regen rate, once that exists as a value (for natural regen and regen effects?)
         }
 
