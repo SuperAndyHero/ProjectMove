@@ -16,12 +16,9 @@ namespace ProjectMove.Content
 
     public abstract class Entity
     {
-        public int index = 0;
+        public World currentWorld;
+
         public Vector2 position       = new Vector2();
-        
-        public Vector2 Center {
-            get { return position + size.Half(); }
-            set { position = Center - size.Half(); }}
 
         public Vector2 velocity       = new Vector2();
         public Vector2 oldPosition    = new Vector2();
@@ -29,10 +26,62 @@ namespace ProjectMove.Content
         public Vector2 size           = new Vector2();
         public Vector2 spriteOffset   = new Vector2();
 
+        public bool active = false;
+
+        public Vector2 Center
+        {
+            get { return position + size.Half(); }
+            set { position = Center - size.Half(); }
+        }
+
         public Rectangle Rect {
             get { return new Rectangle(position.ToPoint(), size.ToPoint()); }
             set { position = Rect.Location.ToVector2(); size = Rect.Size.ToVector2(); }}
 
-        public bool active = false;
+        public void TileCollisions(float wallDrag = 0.9f)
+        {
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    Point currentTilePos = Center.WorldToTileCoords() + new Point(i, j);
+                    if (currentWorld.IsTileInWorld(currentTilePos))
+                    {
+                        //less pretty, but will simplify all floor creation, and should perform better
+                        //later may make a method for getting the collsion rects via location and layer ID, so a for loop may be used, but this may be unnecessary
+                        if (currentWorld.floorLayer[currentTilePos.X, currentTilePos.Y].Base.IsSolid())
+                            Collide(currentTilePos, currentWorld.floorLayer[currentTilePos.X, currentTilePos.Y].Base.CollisionRect());
+
+                        if (currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y].Base.IsSolid())
+                            Collide(currentTilePos, currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y].Base.CollisionRect());
+
+                        if (currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base.IsSolid())
+                            Collide(currentTilePos, currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base.CollisionRect());
+                    }
+                }
+            }
+
+            void Collide(Point location, Rectangle[] rectList)
+            {
+                foreach (Rectangle rect in rectList)
+                {
+                    Rectangle testRect = new Rectangle(rect.Location + location.TileToWorldCoords(), rect.Size);
+
+                    //eek
+                    if (testRect.Intersects(new Rectangle(new Point((int)position.X, (int)oldPosition.Y), size.ToPoint())))
+                    {
+                        position.X = oldPosition.X;
+                        velocity.X = 0;
+                        velocity.Y *= wallDrag;
+                    }
+                    if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)position.Y), size.ToPoint())))
+                    {
+                        position.Y = oldPosition.Y;
+                        velocity.Y = 0;
+                        velocity.X *= wallDrag;
+                    }
+                }
+            }
+        }
     }
 }

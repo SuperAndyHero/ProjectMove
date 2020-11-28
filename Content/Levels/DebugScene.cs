@@ -14,6 +14,7 @@ using ProjectMove.Content.Tiles;
 using ProjectMove.Content.Tiles.TileTypes;
 using ProjectMove.Content.Tiles.TileTypes.Walls;
 using ProjectMove.Content.Npcs.NpcTypes;
+using ProjectMove.Content.Tiles.TileTypes.Floors;
 
 namespace ProjectMove.Content.Levels.LevelTypes
 {
@@ -41,13 +42,14 @@ namespace ProjectMove.Content.Levels.LevelTypes
                     //world.PlaceTile(type, i, j);
                 }
             }
+
+            world.FillLayer(GameID.GetFloorID<Grass>(), (int)World.TileLayer.Floor);
         }
 
         public override void Setup(World world)
         {
-            world.SpawnNpc(GameID.GetNpcID<Seeker>(), GameMain.ScreenSize.ToVector2() / 2, Vector2.Zero);
-
             world.player.position = Size().TileToWorldCoords().ToVector2() / 2;
+            world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position - (Vector2.One * 200), Vector2.Zero);
         }
     }
 }

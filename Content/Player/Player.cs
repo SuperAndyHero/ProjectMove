@@ -12,13 +12,11 @@ namespace ProjectMove.Content.Player
 {
     public class Player : Entity
     {
-        public World currentWorld;
-
         public const int DefaultWidth = 16;
         public const int DefaultHeight = 24;
 
         public const float DefaultMaxSpeed = 3.5f;
-        public const float DefaultAcceleration = 0.1f;
+        public const float DefaultAcceleration = 0.09f;
         public const float DefaultDeceleration = 0.90f;
         public const int   DefaultMaxHealth = 350;
         public const int   DefaultDamageCooldown = 60;
@@ -28,14 +26,15 @@ namespace ProjectMove.Content.Player
         public float maxSpeed = DefaultMaxSpeed;
         public float acceleration = DefaultAcceleration;
         public float deceleration = DefaultDeceleration;
+        public int   maxHealth = DefaultMaxHealth;
         public int   health = DefaultMaxHealth;
 
-        public void Initialize()
+        public void Initialize(World world)
         {
+            currentWorld = world;
+
             size = new Vector2(DefaultWidth, DefaultHeight);
-            velocity = Vector2.Zero;
-            position = Vector2.Zero;
-            oldPosition = Vector2.Zero;
+
             active = true;
         }
 
@@ -78,11 +77,12 @@ namespace ProjectMove.Content.Player
             //for (int e = 0; e < steps; e++)
             //{
                 //position += (velocity / steps);
-                position += velocity;
-                TileCollisions();
+            position += velocity;
+
+            TileCollisions();
             //}
 
-
+            //TODO : move damaging to the enemy side
             EnemyCollisions();
 
             if (Math.Abs(velocity.X) < 0.1f)//if velocity is below an amount set it to zero
@@ -98,45 +98,6 @@ namespace ProjectMove.Content.Player
             UpdateFrame();
 
             oldPosition = position;
-        }
-
-        private void TileCollisions()
-        {
-            Point centerTile = Center.WorldToTileCoords();
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    Point currentTilePos = centerTile + new Point(i, j);
-                    if(currentWorld.IsTileInWorld(currentTilePos))
-                    {
-                        for (int k = 0; k < 3; k++)
-                        {
-                            if (currentWorld.GetTileBase(currentTilePos.X, currentTilePos.Y, k).IsSolid())
-                            {
-                                foreach (Rectangle tileRect in currentWorld.GetTileBase(currentTilePos.X, currentTilePos.Y, k).CollisionRect())
-                                {
-                                    Rectangle testRect = new Rectangle(tileRect.Location + currentTilePos.TileToWorldCoords(), tileRect.Size);
-
-                                    //eek
-                                    if (testRect.Intersects(new Rectangle(new Point((int)position.X, (int)oldPosition.Y), size.ToPoint())))
-                                    {
-                                        position.X = oldPosition.X;
-                                        velocity.X = 0;
-                                        velocity.Y *= WallDrag;
-                                    }
-                                    if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)position.Y), size.ToPoint())))
-                                    {
-                                        position.Y = oldPosition.Y;
-                                        velocity.Y = 0;
-                                        velocity.X *= WallDrag;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         private void EnemyCollisions()
@@ -202,14 +163,7 @@ namespace ProjectMove.Content.Player
                         Point tilePos = Center.WorldToTileCoords() + new Point(i, j);
                         if (currentWorld.IsTileInWorld(tilePos))
                         {
-                            for (int k = 0; k < 3; k++)
-                            {
-                                TileDefaultBase tileBase = currentWorld.GetTileBase(tilePos.X, tilePos.Y, k);
-                                if (tileBase.IsSolid())
-                                {
-                                    spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(k * 48, j * 16, i * 16));
-                                }
-                            }
+                            spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(0, j * 16, i * 16));
                         }  
                     }
                 }

@@ -127,6 +127,7 @@ namespace ProjectMove.Content.Tiles
 
     public abstract class FloorBase : TileDefaultBase
     {
+        public virtual new bool  IsSolid() => false;
         public virtual int A() { return 5; }
     }
 
@@ -207,7 +208,7 @@ namespace ProjectMove.Content.Tiles
                 Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
                 Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize))/* * GameMain.zoom*/;
                 Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize)/* * GameMain.zoom*/;
-                spriteBatch.Draw(TileHandler.FloorTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
+                spriteBatch.Draw(TileHandler.FloorTexture[type], drawPos.WorldToScreenCoords(), null, Color.LightGray, default, default, drawSize * GameMain.spriteScaling, default, default);
             }
         }
         public void PostDraw(SpriteBatch spriteBatch, int i, int j){

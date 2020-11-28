@@ -63,8 +63,8 @@ namespace ProjectMove
 
             GenerateWorld();
 
-            player = new Player { currentWorld = this };
-            player.Initialize();
+            player = new Player();
+            player.Initialize(this);
 
             level.Setup(this);
         }
@@ -122,21 +122,21 @@ namespace ProjectMove
                     velocity = velocity,
                     npcBase = NpcHandler.Bases[type]
                 });
-                npcs[0].Initialize();
+                npcs[0].Initialize(this);
                 return npcs[0];
             }
             return null;
         }
 
-        public TileDefaultBase GetTileBase(int posX, int posY, int layer)
-        {
-            return layer switch
-            {
-                (int)TileLayer.Floor => floorLayer[posX, posY].Base,
-                (int)TileLayer.Wall => wallLayer[posX, posY].Base,
-                _ => objectLayer[posX, posY].Base,
-            };
-        }
+        //public TileDefaultBase GetTileBase(int posX, int posY, int layer)
+        //{
+        //    return layer switch
+        //    {
+        //        (int)TileLayer.Floor => floorLayer[posX, posY].Base,
+        //        (int)TileLayer.Wall => wallLayer[posX, posY].Base,
+        //        _ => objectLayer[posX, posY].Base,
+        //    };
+        //}
 
         public bool IsTileInWorld(Point tileCoordPoint)
         {

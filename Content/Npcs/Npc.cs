@@ -45,26 +45,6 @@ namespace ProjectMove.Content.Npcs
         {
             Bases.LoadObjectTextures(ref NpcTexture, "Npcs/");
         }
-
-        [Obsolete("TODO: make a world-side version of this")]
-        public static void SpawnNpc(ref World world, ushort type, Vector2 position, Vector2 velocity)
-        {
-            if (world.npcs.Count <= MaxNpcs)
-            {
-                Npc thisNpc = new Npc
-                {
-                    type = type,
-                    position = position,
-                    velocity = velocity,
-                    npcBase = Bases[type]
-                };
-                thisNpc.Initialize();
-
-                world.npcs.Insert(0, thisNpc);
-                //Npcs[index].Initialize();//cant find correct index after adding, so its initalized before
-                //maybe replace with array to solve this...
-            }
-        }
     }
     #endregion
 
@@ -91,7 +71,7 @@ namespace ProjectMove.Content.Npcs
 
         public ushort type;//the type, set when this is spawned    (this could be changed to a readonly by adding a ctor to this class, minor change)
 
-        public int maxHealth;//the health cap
+        public int maxHealth;//the health cap (here instead on virtual on the base to enemies of the same type can vary in max health
 
         public int health;//the current health
 
@@ -99,8 +79,10 @@ namespace ProjectMove.Content.Npcs
 
         public string displayName;//name to be seen in-game, set in the npc base else gets autoset to the class name 
 
-        public void Initialize()//this is a seperate initalize method, levels use a ctor for this instead
+        public void Initialize(World world)//this is a seperate initalize method, levels use a ctor for this instead
         {
+            currentWorld = world;
+
             if (npcBase == null)//if no npc base, gets the npc base of this type
                 npcBase = NpcHandler.Bases[type];
 
@@ -121,14 +103,17 @@ namespace ProjectMove.Content.Npcs
 
             //standard stuff for every npc
 
-            //check collision here?
             position += velocity;//updating
+
+            TileCollisions();
 
             if (velocity.Length() < 0.1)//if velocity is below an amount set it to zero
             {
                 velocity = Vector2.Zero;
             }
             //increase health by regen rate, once that exists as a value (for natural regen and regen effects?)
+
+            oldPosition = position;
         }
 
         public void Draw(SpriteBatch spriteBatch)
