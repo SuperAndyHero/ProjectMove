@@ -15,6 +15,8 @@ using ProjectMove.Content.Tiles.TileTypes;
 using ProjectMove.Content.Tiles.TileTypes.Walls;
 using static ProjectMove.GameID;
 using ProjectMove.Content.Tiles.TileTypes.Objects;
+using ProjectMove.Content.Tiles.TileTypes.Floor;
+using ProjectMove.Content.Tiles.TileTypes.Floors;
 
 namespace ProjectMove
 {
@@ -269,7 +271,8 @@ namespace ProjectMove
             if (mainWorld.IsTileInWorld(tileCoord))
             {
                 //string tileName = TileHandler.WallBases[mainWorld.wallLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
-                string tileName = TileHandler.ObjectBases[mainWorld.objectLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
+                //string tileName = TileHandler.ObjectBases[mainWorld.objectLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
+                string tileName = TileHandler.FloorBases[mainWorld.floorLayer[tileCoord.X, tileCoord.Y].type].IsSolid().ToString();
 
                 Vector2 tileNameOffset = font_Arial.MeasureString(tileName);
                 spriteBatch.DrawString(font_Arial, tileName, mousePos.ToVector2(), Color.White, default, new Vector2(tileNameOffset.X / 2.5f, tileNameOffset.Y), 1f, default, default);
@@ -283,6 +286,7 @@ namespace ProjectMove
                                                                                                                                                                                                                                       //un-rounded version //spriteBatch.DrawString(font_Arial, "FPS: " + (1f / gameTime.ElapsedGameTime.TotalSeconds).ToString(), ScreenSize / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
 
                 string str = "Zoom: " + Math.Round(zoom, 2).ToString();
+                //string str = "Zoom: " + GetFloorID<BrickFloor>();
                 Vector2 textSize = font_Arial.MeasureString(str);
                 spriteBatch.DrawString(font_Arial, str, new Vector2(ScreenSize.X - (textSize.X + 20), ScreenSize.Y / 40), Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
             }

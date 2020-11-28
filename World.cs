@@ -128,6 +128,15 @@ namespace ProjectMove
             return null;
         }
 
+        public TileDefaultBase GetTileBase(int posX, int posY, int layer)
+        {
+            return layer switch
+            {
+                (int)TileLayer.Floor => floorLayer[posX, posY].Base,
+                (int)TileLayer.Wall => wallLayer[posX, posY].Base,
+                _ => objectLayer[posX, posY].Base,
+            };
+        }
 
         public bool IsTileInWorld(Point tileCoordPoint)
         {

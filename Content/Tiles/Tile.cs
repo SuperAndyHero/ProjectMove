@@ -76,50 +76,6 @@ namespace ProjectMove.Content.Tiles
             ObjectBases.LoadObjectTextures(ref ObjectTexture, tileTextureLocation);
             FloorBases.LoadObjectTextures(ref FloorTexture, tileTextureLocation);
         }
-
-        #region obsolete
-        //banished to the comment realm
-        //[Obsolete("use GameID.GetTileID<>() instead")]
-        //public static ushort TileIdByName(string name)
-        //{
-        //    ushort index = 0;
-        //    foreach (string str in TileInternalNames)
-        //    {
-        //        if (str == name)
-        //            return index;
-        //        index++;
-        //    }
-        //    return 0;
-        //}
-
-        [Obsolete("use IsPointInWorld on world side")]
-        public static bool IsPointWithinArray(Point tileCoordPoint, ref WallTile[,] array)
-        {
-            if (tileCoordPoint.X >= 0 && tileCoordPoint.Y >= 0 && tileCoordPoint.X < array.GetLength(0) && tileCoordPoint.Y < array.GetLength(1))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        [Obsolete("This method is deprecated, use the non-static version of this method in world instead")]
-        public static void PlaceTile(ref World world, ushort type, Vector2 position)
-        {
-            if (position.X < world.wallLayer.GetLength(0) && position.Y < world.wallLayer.GetLength(1))//is within bounds
-            {
-                world.wallLayer[(int)position.X, (int)position.Y] = new WallTile(type);
-            }
-        }
-
-        [Obsolete("This method is deprecated, use the non-static version of this method in world instead")]
-        public static void PlaceTile(ref World world, ushort type, Point position)
-        {
-            if (position.X < world.wallLayer.GetLength(0) && position.Y < world.wallLayer.GetLength(1))//is within bounds
-            {
-                world.wallLayer[position.X, position.Y] = new WallTile(type);
-            }
-        }
-        #endregion
     }
 
 
@@ -150,6 +106,11 @@ namespace ProjectMove.Content.Tiles
         /// <returns></returns>
 
         public Rectangle DefaultRect { get => new Rectangle(Point.Zero, new Point(TileHandler.tileSize)); }
+
+        public static implicit operator TileDefaultBase(WallTile v)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
@@ -167,7 +128,6 @@ namespace ProjectMove.Content.Tiles
     public abstract class FloorBase : TileDefaultBase
     {
         public virtual int A() { return 5; }
-        public virtual new bool IsSolid() => false;
     }
 
 

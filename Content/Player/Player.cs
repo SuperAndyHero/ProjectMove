@@ -108,27 +108,29 @@ namespace ProjectMove.Content.Player
                 for (int j = -1; j < 2; j++)
                 {
                     Point currentTilePos = centerTile + new Point(i, j);
-                    if(TileHandler.IsPointWithinArray(currentTilePos, ref currentWorld.wallLayer))
+                    if(currentWorld.IsTileInWorld(currentTilePos))
                     {
-                        WallTile tile = currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y];
-                        if (tile.Base.IsSolid())
+                        for (int k = 0; k < 3; k++)
                         {
-                            foreach (Rectangle tileRect in tile.Base.CollisionRect())
+                            if (currentWorld.GetTileBase(currentTilePos.X, currentTilePos.Y, k).IsSolid())
                             {
-                                Rectangle testRect = new Rectangle(tileRect.Location + currentTilePos.TileToWorldCoords(), tileRect.Size);
+                                foreach (Rectangle tileRect in currentWorld.GetTileBase(currentTilePos.X, currentTilePos.Y, k).CollisionRect())
+                                {
+                                    Rectangle testRect = new Rectangle(tileRect.Location + currentTilePos.TileToWorldCoords(), tileRect.Size);
 
-                                //eek
-                                if (testRect.Intersects( new Rectangle(new Point((int)position.X, (int)oldPosition.Y), size.ToPoint()) ))
-                                {
-                                    position.X = oldPosition.X;
-                                    velocity.X = 0;
-                                    velocity.Y *= WallDrag;
-                                }
-                                if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)position.Y), size.ToPoint())))
-                                {
-                                    position.Y = oldPosition.Y;
-                                    velocity.Y = 0;
-                                    velocity.X *= WallDrag;
+                                    //eek
+                                    if (testRect.Intersects(new Rectangle(new Point((int)position.X, (int)oldPosition.Y), size.ToPoint())))
+                                    {
+                                        position.X = oldPosition.X;
+                                        velocity.X = 0;
+                                        velocity.Y *= WallDrag;
+                                    }
+                                    if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)position.Y), size.ToPoint())))
+                                    {
+                                        position.Y = oldPosition.Y;
+                                        velocity.Y = 0;
+                                        velocity.X *= WallDrag;
+                                    }
                                 }
                             }
                         }
@@ -198,12 +200,15 @@ namespace ProjectMove.Content.Player
                     for (int j = -1; j < 2; j++)
                     {
                         Point tilePos = Center.WorldToTileCoords() + new Point(i, j);
-                        if (TileHandler.IsPointWithinArray(tilePos, ref currentWorld.wallLayer))
+                        if (currentWorld.IsTileInWorld(tilePos))
                         {
-                            WallTile tile = currentWorld.wallLayer[tilePos.X, tilePos.Y];
-                            if (tile.Base.IsSolid())
+                            for (int k = 0; k < 3; k++)
                             {
-                                spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(0, j * 16, i * 16));
+                                TileDefaultBase tileBase = currentWorld.GetTileBase(tilePos.X, tilePos.Y, k);
+                                if (tileBase.IsSolid())
+                                {
+                                    spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(k * 48, j * 16, i * 16));
+                                }
                             }
                         }  
                     }
