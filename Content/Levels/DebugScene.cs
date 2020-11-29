@@ -25,31 +25,30 @@ namespace ProjectMove.Content.Levels.LevelTypes
 
         //}
 
-        public override Point Size() => new Point(16, 24);
+        public override Point Size() => new Point(56, 56);
 
         public override void Worldgen(World world)
         {
-            ushort type = GameID.GetWallID<StoneWall>();
-            ushort type2 = GameID.GetWallID<AirWall>();
+            ushort stoneWallType = GameID.GetWallID<StoneWall>();
             for (int i = 0; i < world.Size.X; i++)
             {
                 for (int j = 0; j < world.Size.Y; j++)
                 {
-                    //if(GameMain.random.NextBool())
-                        world.PlaceTile(i > 8 ? type : type2, i, j, (int)World.TileLayer.Wall);
-
-                    //ushort type = (ushort)GameMain.random.Next(TileHandler.TileInternalNames.Count);
-                    //world.PlaceTile(type, i, j);
+                    if(i == 0 || i == world.Size.X || j == 0 || j == world.Size.Y)
+                    {
+                        world.PlaceTile(stoneWallType, i, j, (int)World.TileLayer.Wall);
+                    }
                 }
             }
 
-            world.FillLayer(GameID.GetFloorID<Grass>(), (int)World.TileLayer.Floor);
+            world.FillLayer(GameID.GetFloorID<Gravel>(), (int)World.TileLayer.Floor);
         }
 
         public override void Setup(World world)
         {
             world.player.position = Size().TileToWorldCoords().ToVector2() / 2;
             world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position - (Vector2.One * 200), Vector2.Zero);
+            world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position + (Vector2.One * 200), Vector2.Zero);
         }
     }
 }

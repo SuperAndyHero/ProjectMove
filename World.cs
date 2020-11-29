@@ -22,7 +22,7 @@ using ProjectMove.Content.Tiles.TileTypes.Objects;
 namespace ProjectMove
 {
     //global stuff
-    public class World//a static instance of this is made in gamemain
+    public class World //a static instance of this is made in gamemain
     {
         public LevelBase level;
 
@@ -74,39 +74,58 @@ namespace ProjectMove
         {
             level.Update();
 
-            foreach (Npc npc in npcs)//updating every npc instance in the main npc list
-                npc.Update();
+            for (int i = 0; i < npcs.Count; i++)//updating every npc instance in the main npc list
+            {
+                npcs[i].Update();
+            }
 
-            player.Update();
+                player.Update();
 
             if(!GameMain.lockCamera)
                 GameMain.cameraPosition = (player.position.ToPoint() - GameMain.ScreenSize.Half())/*.MultBy(GameMain.zoom)*/;
         }
 
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void DrawTiles(SpriteBatch spriteBatch)
         {
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {
-                    floorLayer[i, j].Draw(spriteBatch, i, j);
-                    wallLayer[i, j].Draw(spriteBatch, i, j);
-                    objectLayer[i, j].Draw(spriteBatch, i, j); } }
+                    floorLayer[i, j].Draw(spriteBatch, i, j); } }
 
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
+                    wallLayer[i, j].Draw(spriteBatch, i, j); } }
+
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
+                    objectLayer[i, j].Draw(spriteBatch, i, j); } }
+        }
+
+        public void DrawEntities(SpriteBatch spriteBatch)
+        {
             foreach (Npc npc in npcs)
                 npc.Draw(spriteBatch);
 
             player.Draw(spriteBatch);
+        }
 
-            for (int i = 0; i < Size.X; i++)
-            {
-                for (int j = 0; j < Size.Y; j++)
-                {
-                    floorLayer[i, j].PostDraw(spriteBatch, i, j);
-                    wallLayer[i, j].PostDraw(spriteBatch, i, j);
-                    objectLayer[i, j].PostDraw(spriteBatch, i, j);
-                }
-            }
+        public void PostDrawTiles(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
+                    floorLayer[i, j].PostDraw(spriteBatch, i, j); } }
 
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
+                    wallLayer[i, j].PostDraw(spriteBatch, i, j); } }
+
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
+                    objectLayer[i, j].PostDraw(spriteBatch, i, j); } }
+        }
+
+        public void ExtraDraw(SpriteBatch spriteBatch)
+        {
             level.Draw(spriteBatch);//after for special vfx, may split this into multiple methods as needed
         }
 
@@ -127,16 +146,6 @@ namespace ProjectMove
             }
             return null;
         }
-
-        //public TileDefaultBase GetTileBase(int posX, int posY, int layer)
-        //{
-        //    return layer switch
-        //    {
-        //        (int)TileLayer.Floor => floorLayer[posX, posY].Base,
-        //        (int)TileLayer.Wall => wallLayer[posX, posY].Base,
-        //        _ => objectLayer[posX, posY].Base,
-        //    };
-        //}
 
         public bool IsTileInWorld(Point tileCoordPoint)
         {

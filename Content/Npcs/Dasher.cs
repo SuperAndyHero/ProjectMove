@@ -12,7 +12,6 @@ namespace ProjectMove.Content.Npcs.NpcTypes
     {
         const float Deceleration = 0.90f;
 
-        int a;
         public override void Setup()
         {
             npc.displayName = "Dasher";

@@ -51,7 +51,16 @@ namespace ProjectMove
 
         public static float zoom = 1f;
         public Effect zoomEffect;
-        public RenderTarget2D renderTarget;
+
+        public RenderTarget2D mainTarget;
+
+        public RenderTarget2D tileTarget;
+
+        public RenderTarget2D entityTarget;
+
+        public RenderTarget2D postTileTarget;
+
+        public RenderTarget2D screenTarget;
 
         //debug variables
         public static bool debug = false;
@@ -85,7 +94,12 @@ namespace ProjectMove
             screenWidth = graphics.PreferredBackBufferWidth;
             screenHeight = graphics.PreferredBackBufferHeight;
 
-            renderTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            mainTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+
+            tileTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            entityTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            postTileTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            screenTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
 
             cameraPosition = Point.Zero;
 
@@ -230,30 +244,46 @@ namespace ProjectMove
             }
         }
 
+        #region debug draws
+        //spriteBatch.Draw(debugTexture, mousePos.ToVector2(), Color.BlueViolet);//debug
+        //spriteBatch.Draw(debugTexture, mousePos.ScreenToWorldCoords().WorldToScreenCoords(), Color.IndianRed);//debug
+        #endregion
+
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.SetRenderTarget(renderTarget);//everything will now draw to the render target
-            GraphicsDevice.Clear(Color.CornflowerBlue);//clears screen
-
-            //world spritebatch, everything here is effected by the zoom effect
+            GraphicsDevice.SetRenderTarget(tileTarget);//everything will now draw to the render target
+            GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
-            //draws everything in the world
-            mainWorld.Draw(spriteBatch);
-            //spriteBatch.Draw(debugTexture, mousePos.ToVector2(), Color.BlueViolet);//debug
-            //spriteBatch.Draw(debugTexture, mousePos.ScreenToWorldCoords().WorldToScreenCoords(), Color.IndianRed);//debug
+            mainWorld.DrawTiles(spriteBatch);
             spriteBatch.End();
 
-            GraphicsDevice.SetRenderTarget(null);
-            zoomEffect.Parameters["Zoom"].SetValue(new Vector2(zoom));
-            zoomEffect.Parameters["Offset"].SetValue(Vector2.Zero);
 
-            //draw rendertarget
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, effect: zoomEffect);
-            spriteBatch.Draw(renderTarget, Vector2.Zero, Color.White);
+            GraphicsDevice.SetRenderTarget(entityTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            mainWorld.DrawEntities(spriteBatch);
             spriteBatch.End();
 
-            //UI
+
+            GraphicsDevice.SetRenderTarget(postTileTarget);
+            GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            mainWorld.PostDrawTiles(spriteBatch);
+            spriteBatch.End();
+
+
+            GraphicsDevice.SetRenderTarget(mainTarget);
+            GraphicsDevice.Clear(Color.CornflowerBlue);//background color
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Draw(tileTarget, Vector2.Zero, Color.White);
+            spriteBatch.Draw(entityTarget, Vector2.Zero, Color.White);
+            spriteBatch.Draw(postTileTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            GraphicsDevice.SetRenderTarget(screenTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            mainWorld.ExtraDraw(spriteBatch);
             #region mouse
             spriteBatch.Draw(mouseTexture, mousePos.ToVector2(), null, Color.White, default, default, 2f, default, default);
 
@@ -271,8 +301,8 @@ namespace ProjectMove
             if (mainWorld.IsTileInWorld(tileCoord))
             {
                 //string tileName = TileHandler.WallBases[mainWorld.wallLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
-                //string tileName = TileHandler.ObjectBases[mainWorld.objectLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
-                string tileName = TileHandler.FloorBases[mainWorld.floorLayer[tileCoord.X, tileCoord.Y].type].IsSolid().ToString();
+                string tileName = TileHandler.ObjectBases[mainWorld.objectLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
+                //string tileName = TileHandler.FloorBases[mainWorld.floorLayer[tileCoord.X, tileCoord.Y].type].IsSolid().ToString();
 
                 Vector2 tileNameOffset = font_Arial.MeasureString(tileName);
                 spriteBatch.DrawString(font_Arial, tileName, mousePos.ToVector2(), Color.White, default, new Vector2(tileNameOffset.X / 2.5f, tileNameOffset.Y), 1f, default, default);
@@ -290,6 +320,20 @@ namespace ProjectMove
                 Vector2 textSize = font_Arial.MeasureString(str);
                 spriteBatch.DrawString(font_Arial, str, new Vector2(ScreenSize.X - (textSize.X + 20), ScreenSize.Y / 40), Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
             }
+            spriteBatch.End();
+
+
+            GraphicsDevice.SetRenderTarget(null);
+            zoomEffect.Parameters["Zoom"].SetValue(new Vector2(zoom));
+            zoomEffect.Parameters["Offset"].SetValue(Vector2.Zero);//if this is used, ScreenToWorldCoords might be changed to account for this
+            
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, effect: zoomEffect);
+            spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            //UI
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Draw(screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
         }
     }
