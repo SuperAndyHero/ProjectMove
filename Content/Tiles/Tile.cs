@@ -79,7 +79,7 @@ namespace ProjectMove.Content.Tiles
     }
 
 
-    public abstract class TileDefaultBase : DefaultBase
+    public abstract class TileDefaultBase : EntityBase
     {
         public virtual bool IsSolid() => true;
 

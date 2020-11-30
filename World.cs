@@ -103,8 +103,10 @@ namespace ProjectMove
 
         public void DrawEntities(SpriteBatch spriteBatch)
         {
-            foreach (Npc npc in npcs)
-                npc.Draw(spriteBatch);
+            for (int i = 0; i < npcs.Count; i++)//updating every npc instance in the main npc list
+            {
+                npcs[i].Draw(spriteBatch);
+            }
 
             player.Draw(spriteBatch);
         }
@@ -139,7 +141,6 @@ namespace ProjectMove
                     type = type,
                     position = position,
                     velocity = velocity,
-                    npcBase = NpcHandler.Bases[type]
                 });
                 npcs[0].Initialize(this);
                 return npcs[0];

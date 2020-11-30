@@ -16,12 +16,32 @@ namespace ProjectMove
 {
     public static class Extensions
     {
-        public static void LoadObjectTextures<T>(this List<T> list, ref Texture2D[] texArray, string directory) where T : DefaultBase
+        public static void LoadObjectTextures<T>(this List<T> list, ref Texture2D[] texArray, string directory) where T : EntityBase
         {
             texArray = new Texture2D[list.Count];
             for (int i = 0; i < list.Count; i++)
             {
                 string location = directory + (list[i].TextureName() ?? list[i].GetType().Name);
+                try
+                {
+                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>(location);
+                }
+                catch (ContentLoadException)
+                {
+                    System.Diagnostics.Debug.WriteLine("Missing Texture: " + location);
+                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
+                }
+            }
+        }
+
+        public static void LoadObjectTextures(this List<Type> list, ref Texture2D[] texArray, string directory)
+        {
+            texArray = new Texture2D[list.Count];
+            for (int i = 0; i < list.Count; i++)
+            {
+                EntityBase curBase = (NpcBase)Activator.CreateInstance(list[i]);
+
+                string location = directory + (curBase.TextureName() ?? curBase.GetType().Name);
                 try
                 {
                     texArray[i] = GameMain.Instance.Content.Load<Texture2D>(location);

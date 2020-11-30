@@ -19,6 +19,8 @@ namespace ProjectMove.Content.Npcs.NpcTypes
 
         public override void AI()
         {
+            npc.currentWorld.PlaceTile(1, npc.position.WorldToTileCoords(), 2);
+
             npc.velocity = GameMain.mainWorld.player.position - npc.position != Vector2.Zero ? 
                                Vector2.Normalize(GameMain.mainWorld.player.position - npc.position) : 
                                    Vector2.Zero;

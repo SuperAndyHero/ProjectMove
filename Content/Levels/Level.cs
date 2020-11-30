@@ -57,7 +57,7 @@ namespace ProjectMove.Content.Levels
         //}
     }
 
-    public abstract class LevelBase//there is no level object, just the base which is directly used by the world
+    public abstract class LevelBase //there is no level object, just the base which is directly used by the world
     {
         /// <summary>
         /// Called before everything, as this is created

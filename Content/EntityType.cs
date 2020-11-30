@@ -9,7 +9,7 @@ using System.CodeDom.Compiler;
 
 namespace ProjectMove.Content
 {
-    public abstract class DefaultBase//used for everything besides levels
+    public abstract class EntityBase//used for everything besides levels
     {
         public virtual string TextureName() { return null; }
     }

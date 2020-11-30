@@ -48,7 +48,11 @@ namespace ProjectMove.Content.Levels.LevelTypes
         {
             world.player.position = Size().TileToWorldCoords().ToVector2() / 2;
             world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position - (Vector2.One * 200), Vector2.Zero);
+            world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position + (Vector2.One * 300), Vector2.Zero);
             world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position + (Vector2.One * 200), Vector2.Zero);
+            world.SpawnNpc(GameID.GetNpcID<Dasher>(), world.player.position - (Vector2.One * 400), Vector2.Zero);
+            world.SpawnNpc(GameID.GetNpcID<Dasher>(), world.player.position + (Vector2.One * 400), Vector2.Zero);
+            world.SpawnNpc(GameID.GetNpcID<Dasher>(), world.player.position + (Vector2.One * 100), Vector2.Zero);
         }
     }
 }
