@@ -14,15 +14,13 @@ using static ProjectMove.GameID;
 
 namespace ProjectMove.Content.Levels
 {
-    //for seperate areas / worlds, for seperating into seperate files and setting things up when swapping easier
     public static class LevelHandler
     {
-        public static List<LevelBase> Bases;//static list of npc bases, copied(?) from when each npc is created
-        public static List<string> LevelInternalNames;
+        public static List<Type> BaseTypes;
 
         public static void Initialize()
         {
-            Bases = new List<LevelBase>();
+            BaseTypes = new List<Type>();
 
             LevelID = new Dictionary<Type, ushort>();
 
@@ -34,7 +32,7 @@ namespace ProjectMove.Content.Levels
             {
                 Type type = TypeList[i];
 
-                Bases.Add((LevelBase)Activator.CreateInstance(type));
+                BaseTypes.Add(type);
                 LevelID.Add(type, i);
             }
         }

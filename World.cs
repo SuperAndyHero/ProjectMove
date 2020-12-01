@@ -35,7 +35,6 @@ namespace ProjectMove
             get => level.Size();
         }
 
-        //these each share the same tile object, however they each have their own ID sets
         public ObjectTile[,] objectLayer;
 
         public WallTile[,] wallLayer;
@@ -51,11 +50,9 @@ namespace ProjectMove
 
         public void Initialize()
         {
-            //initialize the npc list
             npcs = new List<Npc>();
 
-            //set the current level, placeholder for now
-            level = LevelHandler.Bases[GetLevelID<DebugScene>()];
+            level = (LevelBase)Activator.CreateInstance(LevelHandler.BaseTypes[GetLevelID<DebugScene>()]);
 
             objectLayer = new ObjectTile[Size.X, Size.Y];
             wallLayer = new WallTile[Size.X, Size.Y];
@@ -79,7 +76,7 @@ namespace ProjectMove
                 npcs[i].Update();
             }
 
-                player.Update();
+            player.Update();
 
             if(!GameMain.lockCamera)
                 GameMain.cameraPosition = (player.position.ToPoint() - GameMain.ScreenSize.Half())/*.MultBy(GameMain.zoom)*/;

@@ -18,15 +18,12 @@ namespace ProjectMove.Content.Npcs
     public static class NpcHandler//the stuff that could be in Npc or Main, but isnt for the sake of being clean
     {
         public const int MaxNpcs = 200;
-        //public static List<NpcBase> Bases;//static list of npc bases, copied(?) from when each npc is created
-        //"copied(?)" not. ended up having to make a new instance based on the type of base, so may as well just store the types
         public static List<Type> BaseTypes;
 
         public static Texture2D[] NpcTexture;
 
         public static void Initialize()
         {
-            //Bases = new List<NpcBase>();
             BaseTypes = new List<Type>();
 
             NpcID = new Dictionary<Type, ushort>();
@@ -39,7 +36,6 @@ namespace ProjectMove.Content.Npcs
             {
                 Type type = TypeList[i];
 
-                //Bases.Add((NpcBase)Activator.CreateInstance(type));
                 BaseTypes.Add(type);
                 NpcID.Add(type, i);
             }

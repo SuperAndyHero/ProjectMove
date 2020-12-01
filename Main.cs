@@ -312,7 +312,7 @@ namespace ProjectMove
             #endregion
             if (debug)//fps
             {
-                spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(1f / gameTime.ElapsedGameTime.TotalSeconds, 1).ToString(), ScreenSize.ToVector2() / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+                spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(1f / gameTime.ElapsedGameTime.TotalSeconds, 2).ToString(), ScreenSize.ToVector2() / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
                                                                                                                                                                                                                                       //un-rounded version //spriteBatch.DrawString(font_Arial, "FPS: " + (1f / gameTime.ElapsedGameTime.TotalSeconds).ToString(), ScreenSize / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
 
                 string str = "Zoom: " + Math.Round(zoom, 2).ToString();
