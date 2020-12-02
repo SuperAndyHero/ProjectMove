@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Design;
 using System;
 using System.CodeDom.Compiler;
+using ProjectMove.Content.Tiles;
 
 namespace ProjectMove.Content
 {
@@ -47,57 +48,73 @@ namespace ProjectMove.Content
             {
                 for (int j = -1; j < 2; j++)
                 {
-                    if (position == oldPosition)
-                        return collided;
+                    //if (position == oldPosition)
+                    //    return collided;
                     Point currentTilePos = Center.WorldToTileCoords() + new Point(i, j);
                     if (currentWorld.IsTileInWorld(currentTilePos))
                     {
-                        //less pretty, but will simplify all floor creation, and should perform better
-                        //later may make a method for getting the collsion rects via location and layer ID, so a for loop may be used, but this may be unnecessary
-                        if (currentWorld.floorLayer[currentTilePos.X, currentTilePos.Y].Base.IsSolid())
-                            Collide(currentTilePos, currentWorld.floorLayer[currentTilePos.X, currentTilePos.Y].Base.CollisionRect());
+                        //these are by reference iirc
+                        FloorBase floorBase = currentWorld.floorLayer[currentTilePos.X, currentTilePos.Y].Base;
+                        if (Collide(currentTilePos, floorBase.CollisionRect(), floorBase.IsSolid()))
+                        {
+                            //TODO
+                        }
 
-                        if (currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y].Base.IsSolid())
-                            Collide(currentTilePos, currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y].Base.CollisionRect());
+                        WallBase wallBase = currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y].Base;
+                        if (Collide(currentTilePos, wallBase.CollisionRect(), wallBase.IsSolid()))
+                        {
+                            //TODO
+                        }
 
-                        if (currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base.IsSolid())
-                            Collide(currentTilePos, currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base.CollisionRect());
-                        //not sure how much more performant this is over casting the tile object to a intermediate object that just grabs if its solid
+                        ObjectBase objectBase = currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base;
+                        if(Collide(currentTilePos, objectBase.CollisionRect(), objectBase.IsSolid()))
+                        {
+                            //TODO //objectBase.OnCollide(this)
+                        }
                     }
                 }
             }
             return collided;
 
-            void Collide(Point location, Rectangle[] rectList)
+            bool Collide(Point location, Rectangle[] rectList, bool solid)
             {
-                foreach (Rectangle rect in rectList)
+                bool hasCollided = false;
+                foreach (Rectangle tileRect in rectList)
                 {
-                    Rectangle testRect = new Rectangle(rect.Location + location.TileToWorldCoords(), rect.Size);
+                    Rectangle testRect = new Rectangle(location.TileToWorldCoords() + tileRect.Location, tileRect.Size);
 
-                    if(testRect.Intersects(new Rectangle(new Point((int)position.X, (int)position.Y), size.ToPoint())))
+                    if(testRect.Intersects(Rect))
                     {
-                        if(position == oldPosition)
+                        if (solid)//if solid, so position changing stuff, else just return
                         {
-                            //TODO, compare rect centers for direction and seperate
-                        }
-                        else
-                        {
-                            collided = true;
-                            if (testRect.Intersects(new Rectangle(new Point((int)position.X, (int)oldPosition.Y), size.ToPoint())))
-                            {
-                                position.X = oldPosition.X;
-                                velocity.X = 0;
-                                velocity.Y *= wallDrag;
+                            if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)oldPosition.Y), size.ToPoint())))
+                            {   //anti-stuck
+                                position += Vector2.Normalize((Rect.Center - testRect.Center).ToVector2()) * 2;
                             }
-                            if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)position.Y), size.ToPoint())))
+                            else
                             {
-                                position.Y = oldPosition.Y;
-                                velocity.Y = 0;
-                                velocity.X *= wallDrag;
+                                if (testRect.Intersects(new Rectangle(new Point((int)position.X, (int)oldPosition.Y), size.ToPoint())))
+                                {
+                                    position.X = oldPosition.X;
+                                    velocity.X = 0;
+                                    velocity.Y *= wallDrag;
+                                }
+                                if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)position.Y), size.ToPoint())))
+                                {
+                                    position.Y = oldPosition.Y;
+                                    velocity.Y = 0;
+                                    velocity.X *= wallDrag;
+                                }
                             }
                         }
+                        hasCollided = true;
                     }
                 }
+                if (hasCollided)
+                {
+                    collided = true;
+                }
+                return hasCollided;
             }
         }
     }
