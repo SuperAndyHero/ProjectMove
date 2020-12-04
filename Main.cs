@@ -15,8 +15,8 @@ using ProjectMove.Content.Tiles.TileTypes;
 using ProjectMove.Content.Tiles.TileTypes.Walls;
 using static ProjectMove.GameID;
 using ProjectMove.Content.Tiles.TileTypes.Objects;
-using ProjectMove.Content.Tiles.TileTypes.Floor;
 using ProjectMove.Content.Tiles.TileTypes.Floors;
+using System.Diagnostics;
 
 namespace ProjectMove
 {
@@ -37,40 +37,48 @@ namespace ProjectMove
         public static int mainUpdateCount;
         public static Random random;
 
-
         public static World mainWorld;
 
-        public static Texture2D mouseTexture;
-        public static Point mousePos;
+        public RenderTarget2D mainTarget;
+        public RenderTarget2D tileTarget;
+        public RenderTarget2D entityTarget;
+        public RenderTarget2D postTileTarget;
+        public RenderTarget2D screenTarget;
 
-
-        //camera
-        public static Point cameraPosition;
-        public static bool lockCamera = false;
-        private bool hasReleasedCameraButton = true;
 
         public static float zoom = 1f;
         public Effect zoomEffect;
 
-        public RenderTarget2D mainTarget;
+        public static ushort selectedFloorTile;
+        public static ushort selectedWallTile;
+        public static ushort selectedObjectTile;
 
-        public RenderTarget2D tileTarget;
+        public static byte buildModeLayer = (byte)TileHandler.TileLayer.Floor;
+        public static bool buildMode = false;
 
-        public RenderTarget2D entityTarget;
-
-        public RenderTarget2D postTileTarget;
-
-        public RenderTarget2D screenTarget;
-
-        //debug variables
         public static bool debug = false;
-        private bool hasReleasedDebugButton = true;
+
+        public static bool lockCamera = false;
+
+        public static Point cameraPosition;
+        public static Point mousePos;
 
         //textures
+        public static Texture2D mouseTexture;
         public static Texture2D debugTexture;
         public static Texture2D playerTexture;
 
-        public const float spriteScaling = 2f;
+        public static Texture2D BuildUi;
+        public static Texture2D BuildUiPreview;
+        public static Texture2D BuildUiFloor;
+        public static Texture2D BuildUiWall;
+        public static Texture2D BuildUiObject;
+
+        public const float spriteScaling = 2f;//since all sprites are scaled to 2x
+        public static float uiScaling = 2f;
+
+        public KeyboardState keyState;
+        public KeyboardState oldKeyState;
 
         public static Game Instance { get; set; }
 
@@ -101,9 +109,11 @@ namespace ProjectMove
             postTileTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
             screenTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
 
-            cameraPosition = Point.Zero;
 
             random = new Random();
+
+
+            cameraPosition = Point.Zero;
 
             mousePos = new Point();
 
@@ -134,6 +144,16 @@ namespace ProjectMove
 
             mouseTexture = Content.Load<Texture2D>("Gui/MousePointer");
 
+            BuildUi = Content.Load<Texture2D>("Gui/build_overlay");
+            BuildUiPreview = Content.Load<Texture2D>("Gui/PreviewBorder");
+            BuildUiFloor = Content.Load<Texture2D>("Gui/build_overlay_floor");
+            BuildUiWall = Content.Load<Texture2D>("Gui/build_overlay_wall");
+            BuildUiObject = Content.Load<Texture2D>("Gui/build_overlay_object");
+
+            selectedFloorTile = GetFloorID<AirFloor>();
+            selectedWallTile = GetWallID<AirWall>();
+            selectedObjectTile = GetObjectID<AirObject>();
+
             TileHandler.LoadTileTextures();
             NpcHandler.LoadNpcTextures();
             #endregion
@@ -143,25 +163,6 @@ namespace ProjectMove
 
             base.LoadContent();
         }
-
-        [Obsolete("Use extension instead")]
-        public static void LoadObjectTextures(ref Texture2D[] texArray, ref List<string> nameArray, string directory)
-        {
-            texArray = new Texture2D[nameArray.Count];
-            for (int i = 0; i < nameArray.Count; i++)
-            {
-                try
-                {
-                    texArray[i] = Instance.Content.Load<Texture2D>(directory + nameArray[i]);
-                }
-                catch (ContentLoadException)
-                {
-                    System.Diagnostics.Debug.WriteLine("Missing Texture: " + directory + nameArray[i]   );
-                    texArray[i] = Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
-                }
-            }
-        }
-
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -173,6 +174,35 @@ namespace ProjectMove
         }
         #endregion
 
+        private bool ButtonJustPressed(Keys keyType)
+        {
+            if (oldKeyState.IsKeyUp(keyType) && keyState.IsKeyDown(keyType))//is tracking bool is true, and key down: invert bools and return true
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void ButtonToggle(ref bool stateBool, Keys keyType)
+        {
+            if (ButtonJustPressed(keyType))
+            {
+                stateBool = !stateBool;
+            }
+        }
+
+        private ref ushort GetSelectedTile(int layer)
+        {
+            switch (layer)
+            {
+                case (int)TileHandler.TileLayer.Floor:
+                    return ref selectedFloorTile;
+                case (int)TileHandler.TileLayer.Wall:
+                    return ref selectedWallTile;
+                default:
+                    return ref selectedObjectTile;
+            }
+        }
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -182,15 +212,14 @@ namespace ProjectMove
         protected override void Update(GameTime gameTime)
         {
             mainUpdateCount++;//updating the main counter
-
-            KeyboardState keyState = Keyboard.GetState();//gets keyboard state
+            keyState = Keyboard.GetState();//gets keyboard state
 
             MouseState mouseState = Mouse.GetState();
 
             mousePos = mouseState.Position;
 
             //closing the game with esc (debug)
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyState.IsKeyDown(Keys.Escape)) { Exit();}
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyState.IsKeyDown(Keys.Escape)) { Exit();}
 
             if (keyState.IsKeyDown(Keys.OemMinus))
             {
@@ -203,24 +232,59 @@ namespace ProjectMove
                 zoom += 0.010f;
             }
 
-            //toggling debug mode
-            ButtonToggle(ref debug, ref hasReleasedDebugButton, ref keyState, Keys.G);
+            ButtonToggle(ref debug, Keys.G);
 
-            //toggle locking the camera
-            ButtonToggle(ref lockCamera, ref hasReleasedCameraButton, ref keyState, Keys.C);
+            ButtonToggle(ref lockCamera, Keys.C);
 
-            if (debug)
+            ButtonToggle(ref buildMode, Keys.B);
+
+            if (ButtonJustPressed(Keys.Up))
             {
-                Point tileCoord = mousePos.ScreenToTileCoords();
-                if (mainWorld.IsTileInWorld(tileCoord))
+                if (buildModeLayer >= 2)
+                    buildModeLayer = 0;
+                else buildModeLayer++;
+            }
+
+            if (ButtonJustPressed(Keys.Down))
+            {
+                if (buildModeLayer <= 0)
+                    buildModeLayer = 2;
+                else buildModeLayer--;
+            }
+
+
+            if (ButtonJustPressed(Keys.Left))
+            {
+                ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
+
+                if (selectedTile <= 0)
+                    selectedTile = (ushort)TileHandler.TypeCount(buildModeLayer);
+                else
+                    selectedTile--;
+            }
+
+            if (ButtonJustPressed(Keys.Right))
+            {
+                ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
+
+                if (selectedTile >= TileHandler.TypeCount(buildModeLayer))
+                    selectedTile = 0;
+                else
+                    selectedTile++;
+            }
+
+            if (buildMode)
+            {
+                Point mouseTileCoord = mousePos.ScreenToTileCoords();
+                if (mainWorld.IsTileInWorld(mouseTileCoord))
                 {
                     if (mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        mainWorld.PlaceTile(GetObjectID<Desk>(), tileCoord, (int)World.TileLayer.Object);
+                        mainWorld.PlaceTile(GetSelectedTile(buildModeLayer), mouseTileCoord, buildModeLayer);
                     }
                     else if (mouseState.RightButton == ButtonState.Pressed)
                     {
-                        mainWorld.PlaceTile(GetWallID<AirWall>(), tileCoord, (int)World.TileLayer.Wall);
+                        mainWorld.PlaceTile(TileHandler.GetAirTile(buildModeLayer), mouseTileCoord, buildModeLayer);
                     }
                 }
             }
@@ -228,26 +292,10 @@ namespace ProjectMove
             mainWorld.Update();//all player and npc updates in the world
 
 
+
+            oldKeyState = keyState;
             base.Update(gameTime);
         }
-
-        private void ButtonToggle(ref bool stateBool, ref bool buttonTrack, ref KeyboardState keystate, Keys keyType)
-        {
-            if (buttonTrack && keystate.IsKeyDown(keyType))
-            {
-                stateBool = !stateBool;
-                buttonTrack = false;
-            }
-            else if (!buttonTrack && keystate.IsKeyUp(keyType))
-            {
-                buttonTrack = true;
-            }
-        }
-
-        #region debug draws
-        //spriteBatch.Draw(debugTexture, mousePos.ToVector2(), Color.BlueViolet);//debug
-        //spriteBatch.Draw(debugTexture, mousePos.ScreenToWorldCoords().WorldToScreenCoords(), Color.IndianRed);//debug
-        #endregion
 
         protected override void Draw(GameTime gameTime)
         {
@@ -280,46 +328,18 @@ namespace ProjectMove
             spriteBatch.Draw(postTileTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
+            //UI
             GraphicsDevice.SetRenderTarget(screenTarget);
             GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
             mainWorld.ExtraDraw(spriteBatch);
-            #region mouse
-            spriteBatch.Draw(mouseTexture, mousePos.ToVector2(), null, Color.White, default, default, 2f, default, default);
 
-            foreach (Npc npc in mainWorld.npcs)
-            {
-                if (npc.Rect.Contains(mousePos.ScreenToWorldCoords()))
-                {
-                    Vector2 npcNameOffset = font_Arial.MeasureString(npc.displayName);
-                    spriteBatch.DrawString(font_Arial, npc.displayName, mousePos.ToVector2(), Color.White, default, new Vector2(npcNameOffset.X / 2.5f, -npcNameOffset.Y), 1f, default, default);//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
-                }
-            }
+            DrawBuildUi(spriteBatch);
 
-            Point tileCoord = mousePos.ScreenToTileCoords();
+            DrawMouse(spriteBatch);
 
-            if (mainWorld.IsTileInWorld(tileCoord))
-            {
-                //string tileName = TileHandler.WallBases[mainWorld.wallLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
-                string tileName = TileHandler.ObjectBases[mainWorld.objectLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
-                //string tileName = TileHandler.FloorBases[mainWorld.floorLayer[tileCoord.X, tileCoord.Y].type].IsSolid().ToString();
+            DrawDebug(spriteBatch, gameTime);
 
-                Vector2 tileNameOffset = font_Arial.MeasureString(tileName);
-                spriteBatch.DrawString(font_Arial, tileName, mousePos.ToVector2(), Color.White, default, new Vector2(tileNameOffset.X / 2.5f, tileNameOffset.Y), 1f, default, default);
-            }
-            //spriteBatch.DrawString(font_Arial, mousePos.ScreenToWorldCoords().ToString(), mousePos.ToVector2(), Color.White, default, default, 1f, default, default); ;
-
-            #endregion
-            if (debug)//fps
-            {
-                spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(1f / gameTime.ElapsedGameTime.TotalSeconds, 2).ToString(), ScreenSize.ToVector2() / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
-                                                                                                                                                                                                                                      //un-rounded version //spriteBatch.DrawString(font_Arial, "FPS: " + (1f / gameTime.ElapsedGameTime.TotalSeconds).ToString(), ScreenSize / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
-
-                string str = "Zoom: " + Math.Round(zoom, 2).ToString();
-                //string str = "Zoom: " + GetFloorID<BrickFloor>();
-                Vector2 textSize = font_Arial.MeasureString(str);
-                spriteBatch.DrawString(font_Arial, str, new Vector2(ScreenSize.X - (textSize.X + 20), ScreenSize.Y / 40), Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
-            }
             spriteBatch.End();
 
 
@@ -335,6 +355,78 @@ namespace ProjectMove
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.Draw(screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
+        }
+        private void DrawBuildUi(SpriteBatch spriteBatch)
+        {
+            if (buildMode)
+            {
+                Texture2D modeTexture = buildModeLayer == (byte)TileHandler.TileLayer.Floor ? BuildUiFloor : 
+                                        buildModeLayer == (byte)TileHandler.TileLayer.Wall ? BuildUiWall : 
+                                                                                            BuildUiObject;
+                spriteBatch.Draw(modeTexture, new Vector2(0, screenHeight), null, Color.White, default, new Vector2(0, modeTexture.Height), uiScaling, default, default);
+                spriteBatch.Draw(BuildUi, new Vector2(0, screenHeight), null, Color.White, default, new Vector2(0, BuildUi.Height), uiScaling, default, default);
+            }
+        }
+
+        private void DrawMouse(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(mouseTexture, mousePos.ToVector2(), null, Color.White, default, default, uiScaling, default, default);
+
+            if (buildMode)
+            {
+                Vector2 pos = mousePos.ToVector2() + new Vector2(mouseTexture.Width, BuildUiPreview.Height  * 2.1f);
+                spriteBatch.Draw(BuildUiPreview, pos, null, Color.White, default, BuildUiPreview.Size().Half(), uiScaling, default, default);
+                Texture2D tileTexture = buildModeLayer == (byte)TileHandler.TileLayer.Floor ? TileHandler.FloorTexture[selectedFloorTile] : 
+                                        buildModeLayer == (byte)TileHandler.TileLayer.Wall ? TileHandler.WallTexture[selectedWallTile] : 
+                                                                                            TileHandler.ObjectTexture[selectedObjectTile];
+                spriteBatch.Draw(tileTexture, pos, null, Color.White, default, tileTexture.Size().Half(), uiScaling, default, default);
+
+                string tileName = buildModeLayer == (byte)TileHandler.TileLayer.Floor ? TileHandler.FloorBases[selectedFloorTile].GetType().Name :
+                                        buildModeLayer == (byte)TileHandler.TileLayer.Wall ? TileHandler.WallBases[selectedWallTile].GetType().Name :
+                                                                                            TileHandler.ObjectBases[selectedObjectTile].GetType().Name;
+                Vector2 tileNameOffset = font_Arial.MeasureString(tileName);
+                spriteBatch.DrawString(font_Arial, tileName, pos + new Vector2(0, tileNameOffset.Y * 2f), Color.White, default, tileNameOffset.Half(), 1.2f, default, default);//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+            }
+
+            #region commented debug draws for later
+            //Point tileCoord = mousePos.ScreenToTileCoords();
+
+            //npc names need to be drawn on a different layer so they are effected by the zoom
+            //foreach (Npc npc in mainWorld.npcs)
+            //{
+            //    if (npc.Rect.Contains(mousePos.ScreenToWorldCoords()))
+            //    {
+            //        Vector2 npcNameOffset = font_Arial.MeasureString(npc.displayName);
+            //        spriteBatch.DrawString(font_Arial, npc.displayName, npc.Center.WorldToScreenCoords(), Color.White, default, new Vector2(npcNameOffset.X / 2, -npcNameOffset.Y / 2), 1f, default, default);//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+            //    }
+            //}
+
+            //if (mainWorld.IsTileInWorld(tileCoord))
+            //{
+            //    //string tileName = TileHandler.WallBases[mainWorld.wallLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
+            //    string tileName = TileHandler.ObjectBases[mainWorld.objectLayer[tileCoord.X, tileCoord.Y].type].GetType().Name;
+            //    //string tileName = TileHandler.FloorBases[mainWorld.floorLayer[tileCoord.X, tileCoord.Y].type].IsSolid().ToString();
+
+            //    Vector2 tileNameOffset = font_Arial.MeasureString(tileName);
+            //    spriteBatch.DrawString(font_Arial, tileName, mousePos.ToVector2(), Color.White, default, new Vector2(tileNameOffset.X / 2.5f, tileNameOffset.Y), 1f, default, default);
+            //}
+
+            //spriteBatch.Draw(debugTexture, mousePos.ToVector2(), Color.BlueViolet);//debug
+            //spriteBatch.Draw(debugTexture, mousePos.ScreenToWorldCoords().WorldToScreenCoords(), Color.IndianRed);//debug
+            #endregion
+        }
+
+        private void DrawDebug(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if (debug)
+            {
+                spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(1f / gameTime.ElapsedGameTime.TotalSeconds, 2).ToString(), ScreenSize.ToVector2() / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+                                                                                                                                                                                                                                      //un-rounded version //spriteBatch.DrawString(font_Arial, "FPS: " + (1f / gameTime.ElapsedGameTime.TotalSeconds).ToString(), ScreenSize / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+
+                string str = "Zoom: " + Math.Round(zoom, 2).ToString();
+                Vector2 textSize = font_Arial.MeasureString(str);
+                spriteBatch.DrawString(font_Arial, str, new Vector2(ScreenSize.X - (textSize.X + 20), ScreenSize.Y / 40), Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
+            }
         }
     }
 }

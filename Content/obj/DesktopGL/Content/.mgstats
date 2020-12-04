@@ -4,7 +4,12 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Documents/ProjectMove/Content/Debug.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Debug.xnb","TextureProcessor","Texture2DContent",140,1109,0.0142795
 "D:/Documents/ProjectMove/Content/Debug1.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Debug1.xnb","TextureProcessor","Texture2DContent",203,1109,0.1206459
 "D:/Documents/ProjectMove/Content/Effects/Zoom.fx","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Effects/Zoom.xnb","EffectProcessor","CompiledEffectContent",411,880,0.3686831
+"D:/Documents/ProjectMove/Content/Gui/build_overlay.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Gui/build_overlay.xnb","TextureProcessor","Texture2DContent",637,30085,0.1787465
+"D:/Documents/ProjectMove/Content/Gui/build_overlay_floor.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Gui/build_overlay_floor.xnb","TextureProcessor","Texture2DContent",430,30085,0.0055213
+"D:/Documents/ProjectMove/Content/Gui/build_overlay_object.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Gui/build_overlay_object.xnb","TextureProcessor","Texture2DContent",418,30085,0.006448
+"D:/Documents/ProjectMove/Content/Gui/build_overlay_wall.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Gui/build_overlay_wall.xnb","TextureProcessor","Texture2DContent",424,30085,0.0160717
 "D:/Documents/ProjectMove/Content/Gui/MousePointer.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Gui/MousePointer.xnb","TextureProcessor","Texture2DContent",226,569,0.215014
+"D:/Documents/ProjectMove/Content/Gui/PreviewBorder.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Gui/PreviewBorder.xnb","TextureProcessor","Texture2DContent",329,2021,0.1333835
 "D:/Documents/ProjectMove/Content/Npcs/Dasher.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Npcs/Dasher.xnb","TextureProcessor","Texture2DContent",208,341,0.1998376
 "D:/Documents/ProjectMove/Content/Npcs/Dummy.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Npcs/Dummy.xnb","TextureProcessor","Texture2DContent",185,341,0.0016371
 "D:/Documents/ProjectMove/Content/Npcs/Seeker.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Npcs/Seeker.xnb","TextureProcessor","Texture2DContent",180,341,0.0010008

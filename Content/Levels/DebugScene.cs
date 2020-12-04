@@ -34,14 +34,14 @@ namespace ProjectMove.Content.Levels.LevelTypes
             {
                 for (int j = 0; j < world.Size.Y; j++)
                 {
-                    if(i == 0 || i == world.Size.X || j == 0 || j == world.Size.Y)
+                    if(i == 0 || i == world.Size.X - 1 || j == 0 || j == world.Size.Y - 1)
                     {
-                        world.PlaceTile(stoneWallType, i, j, (int)World.TileLayer.Wall);
+                        world.PlaceTile(stoneWallType, i, j, (int)TileHandler.TileLayer.Wall);
                     }
                 }
             }
 
-            world.FillLayer(GameID.GetFloorID<Dirt>(), (int)World.TileLayer.Floor);
+            world.FillLayer(GameID.GetFloorID<Dirt>(), (int)TileHandler.TileLayer.Floor);
         }
 
         public override void Setup(World world)

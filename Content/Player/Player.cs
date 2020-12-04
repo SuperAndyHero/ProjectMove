@@ -140,7 +140,7 @@ namespace ProjectMove.Content.Player
         {
             Rectangle playerFrame = new Rectangle(Frame.ToPoint(), FrameSize.ToPoint());
             //sprite
-            spriteBatch.Draw(GameMain.playerTexture, (Center/* * GameMain.zoom*/).WorldToScreenCoords(), playerFrame, Color.White, default, FrameSize.Half(), GameMain.spriteScaling/* * GameMain.zoom*/, default, default);
+            spriteBatch.Draw(GameMain.playerTexture, (Center/* * GameMain.zoom*/).WorldToScreenCoords(), playerFrame, Color.White, default, FrameSize.Half(), GameMain.spriteScaling, default, default);
 
             //health text
             string healthStr = health.ToString();

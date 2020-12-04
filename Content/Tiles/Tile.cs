@@ -12,6 +12,9 @@ using ProjectMove.Content.Npcs.NpcTypes;
 using ProjectMove;
 using ProjectMove.Content.Tiles.TileTypes;
 using static ProjectMove.GameID;
+using ProjectMove.Content.Tiles.TileTypes.Walls;
+using ProjectMove.Content.Tiles.TileTypes.Floors;
+using ProjectMove.Content.Tiles.TileTypes.Objects;
 
 namespace ProjectMove.Content.Tiles
 {
@@ -27,6 +30,37 @@ namespace ProjectMove.Content.Tiles
         public static Texture2D[] WallTexture;
         public static Texture2D[] ObjectTexture;
         public static Texture2D[] FloorTexture;
+
+        public enum TileLayer
+        {
+            Object,
+            Wall,
+            Floor
+        }
+
+        public static int FloorTypeCount => FloorBases.Count() - 1;
+        public static int WallTypeCount => WallBases.Count() - 1;
+        public static int ObjectTypeCount => ObjectBases.Count() - 1;
+
+        public static int TypeCount(int layer)
+        {
+            return layer switch
+            {
+                (int)TileLayer.Floor => FloorTypeCount,
+                (int)TileLayer.Wall => WallTypeCount,
+                _ => ObjectTypeCount,
+            };
+        }
+
+        public static ushort GetAirTile(int layer)
+        {
+            return layer switch
+            {
+                (int)TileLayer.Floor => GetFloorID<AirFloor>(),
+                (int)TileLayer.Wall => GetWallID<AirWall>(),
+                _ => GetObjectID<AirObject>(),
+            };
+        }
 
         public static void Initialize()
         {
@@ -106,29 +140,21 @@ namespace ProjectMove.Content.Tiles
         /// <returns></returns>
 
         public Rectangle DefaultRect { get => new Rectangle(Point.Zero, new Point(TileHandler.tileSize)); }
-
-        public static implicit operator TileDefaultBase(WallTile v)
-        {
-            throw new NotImplementedException();
-        }
     }
 
 
 
     public abstract class WallBase : TileDefaultBase
     {
-        public virtual int C() { return 9; }
     }
 
     public abstract class ObjectBase : TileDefaultBase
     {
-        public virtual int B() { return 7; }
     }
 
     public abstract class FloorBase : TileDefaultBase
     {
         public virtual new bool  IsSolid() => false;
-        public virtual int A() { return 5; }
     }
 
 

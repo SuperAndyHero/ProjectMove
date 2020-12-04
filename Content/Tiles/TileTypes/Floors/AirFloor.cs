@@ -9,9 +9,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using ProjectMove.Content.Npcs.NpcTypes;
-using ProjectMove;
 
-namespace ProjectMove.Content.Tiles.TileTypes.Floor
+namespace ProjectMove.Content.Tiles.TileTypes.Floors
 {
     public class AirFloor : FloorBase
     {

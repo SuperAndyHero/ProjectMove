@@ -45,3 +45,8 @@ D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Gravel.x
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Stone.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Desk.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Effects\Zoom.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Gui\build_overlay.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Gui\build_overlay_floor.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Gui\build_overlay_object.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Gui\build_overlay_wall.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Gui\PreviewBorder.xnb

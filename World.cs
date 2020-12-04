@@ -16,8 +16,9 @@ using ProjectMove.Content.Tiles.TileTypes;
 using ProjectMove.Content.Tiles.TileTypes.Walls;
 using ProjectMove.Content.Levels.LevelTypes;
 using static ProjectMove.GameID;
-using ProjectMove.Content.Tiles.TileTypes.Floor;
 using ProjectMove.Content.Tiles.TileTypes.Objects;
+using ProjectMove.Content.Tiles.TileTypes.Floors;
+
 
 namespace ProjectMove
 {
@@ -40,13 +41,6 @@ namespace ProjectMove
         public WallTile[,] wallLayer;
 
         public FloorTile[,] floorLayer;
-
-        public enum TileLayer
-        {
-            Object,
-            Wall,
-            Floor
-        }
 
         public void Initialize()
         {
@@ -91,11 +85,8 @@ namespace ProjectMove
 
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {
-                    wallLayer[i, j].Draw(spriteBatch, i, j); } }
-
-            for (int i = 0; i < Size.X; i++) {
-                for (int j = 0; j < Size.Y; j++) {
-                    objectLayer[i, j].Draw(spriteBatch, i, j); } }
+                    wallLayer[i, j].Draw(spriteBatch, i, j);
+                    objectLayer[i, j].Draw(spriteBatch, i, j); } } //these are both drawn on the same "layer" so lower walls draw over higher objects
         }
 
         public void DrawEntities(SpriteBatch spriteBatch)
@@ -171,9 +162,10 @@ namespace ProjectMove
 
         public void ClearWorld()
         {
-            FillLayer(GetFloorID<AirFloor>(), (int)TileLayer.Floor);//air seems to be at index 0 anyway, but to be sure
-            FillLayer(GetWallID<AirWall>(), (int)TileLayer.Wall);
-            FillLayer(GetObjectID<AirObject>(), (int)TileLayer.Object);
+            for (int i = 0; i < 2; i++)
+            {
+                FillLayer(TileHandler.GetAirTile(i), i);//air seems to be at index 0 anyway, but to be sure
+            }
         }
 
         public void FillLayer(ushort type, int layer)
@@ -203,13 +195,13 @@ namespace ProjectMove
             {
                 switch (layer)
                 {
-                    case (int)TileLayer.Floor:
+                    case (int)TileHandler.TileLayer.Floor:
                         floorLayer[posX, posY] = new FloorTile(type);
                         break;
-                    case (int)TileLayer.Wall:
+                    case (int)TileHandler.TileLayer.Wall:
                         wallLayer[posX, posY] = new WallTile(type);
                         break;
-                    case (int)TileLayer.Object:
+                    case (int)TileHandler.TileLayer.Object:
                         objectLayer[posX, posY] = new ObjectTile(type);
                         break;
                 }

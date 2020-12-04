@@ -27,7 +27,6 @@ namespace ProjectMove.Content
         public Vector2 oldPosition    = new Vector2();
         public Vector2 oldVelocity    = new Vector2();
         public Vector2 size           = new Vector2(16, 16);
-        //public Vector2 spriteOffset   = new Vector2(); //unused atm (why keep a value for this here, that is tracked server side(?) and on every entity)
 
         public bool active = false;
 
@@ -49,7 +48,7 @@ namespace ProjectMove.Content
                 for (int j = -1; j < 2; j++)
                 {
                     //if (position == oldPosition)
-                    //    return collided;
+                    //    return collided; disabled because may cause issues with OnCollide hooks on some tiles, enable later and try again
                     Point currentTilePos = Center.WorldToTileCoords() + new Point(i, j);
                     if (currentWorld.IsTileInWorld(currentTilePos))
                     {
