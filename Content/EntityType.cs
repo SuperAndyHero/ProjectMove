@@ -14,21 +14,25 @@ namespace ProjectMove.Content
     {
         public virtual string TextureName() { return null; }
 
-        //maybe move spriteOffset here has a virtual?
+        public virtual bool EntityCollide() => true;//can be used for physics (npcs) or oh hit effects (projectiles)
+
+        public virtual bool TileCollide() => true;
+
+        //maybe move spriteOffset here as a virtual?
     }
 
     public abstract class Entity
     {
-        public World currentWorld;
-
         public Vector2 position       = new Vector2();
-
         public Vector2 velocity       = new Vector2();
         public Vector2 oldPosition    = new Vector2();
         public Vector2 oldVelocity    = new Vector2();
         public Vector2 size           = new Vector2(16, 16);
+        //public bool active            = false;unused
 
-        public bool active = false;
+        //unimportant variables (stuff that would not be tracked by the server)
+        internal World currentWorld;
+        internal Point frame = Point.Zero;
 
         public Vector2 Center
         {
@@ -38,7 +42,13 @@ namespace ProjectMove.Content
 
         public Rectangle Rect {
             get { return new Rectangle(position.ToPoint(), size.ToPoint()); }
-            set { position = Rect.Location.ToVector2(); size = Rect.Size.ToVector2(); }}
+            set { position = value.Location.ToVector2(); size = value.Size.ToVector2(); }}
+
+        public Rectangle OldRect
+        {
+            get { return new Rectangle(oldPosition.ToPoint(), size.ToPoint()); }
+            set { oldPosition = value.Location.ToVector2(); size = value.Size.ToVector2(); }
+        }
 
         public bool TileCollisions(float wallDrag = 0.9f)
         {
@@ -86,9 +96,9 @@ namespace ProjectMove.Content
                     {
                         if (solid)//if solid, so position changing stuff, else just return
                         {
-                            if (testRect.Intersects(new Rectangle(new Point((int)oldPosition.X, (int)oldPosition.Y), size.ToPoint())))
+                            if (testRect.Intersects(OldRect))
                             {   //anti-stuck
-                                position += Vector2.Normalize((Rect.Center - testRect.Center).ToVector2()) * 2;
+                                position += Vector2.Normalize((Rect.Center - testRect.Center).ToVector2()) * 2;//multiplier at the ned is the distance it moves (speed)
                             }
                             else
                             {

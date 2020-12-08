@@ -16,7 +16,6 @@ namespace ProjectMove.Content.Npcs.NpcTypes
             npc.maxHealth = 200;
             npc.size = new Vector2(16, 16);
         }
-
         public override void AI()
         {
             //npc.currentWorld.PlaceTile(1, npc.position.WorldToTileCoords(), 2);

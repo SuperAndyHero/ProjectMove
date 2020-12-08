@@ -356,6 +356,7 @@ namespace ProjectMove
             spriteBatch.Draw(screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
         }
+
         private void DrawBuildUi(SpriteBatch spriteBatch)
         {
             if (buildMode)
@@ -416,13 +417,27 @@ namespace ProjectMove
             #endregion
         }
 
+        private readonly List<float> fps = new List<float>();
+
         private void DrawDebug(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            fps.Add(1f / ((float)gameTime.ElapsedGameTime.Milliseconds / 1000));
+
+            float counter = 0;
+            foreach(float num in fps)
+            {
+                counter += num;
+            }
+
+            spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(counter / fps.Count, 2).ToString(), ScreenSize.ToVector2() / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default);
+
+            if (fps.Count >= 30)
+            {
+                fps.RemoveAt(0);
+            }
+
             if (debug)
             {
-                spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(1f / gameTime.ElapsedGameTime.TotalSeconds, 2).ToString(), ScreenSize.ToVector2() / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
-                                                                                                                                                                                                                                      //un-rounded version //spriteBatch.DrawString(font_Arial, "FPS: " + (1f / gameTime.ElapsedGameTime.TotalSeconds).ToString(), ScreenSize / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)
-
                 string str = "Zoom: " + Math.Round(zoom, 2).ToString();
                 Vector2 textSize = font_Arial.MeasureString(str);
                 spriteBatch.DrawString(font_Arial, str, new Vector2(ScreenSize.X - (textSize.X + 20), ScreenSize.Y / 40), Color.LightGoldenrodYellow, default, default, 1f, default, default); ;//position + new Vector2(20, 0) //new Vector2(GameMain.screenWidth / 2, GameMain.screenHeight / 2)

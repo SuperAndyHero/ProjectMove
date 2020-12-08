@@ -94,7 +94,7 @@ namespace ProjectMove.Content.Npcs
 
             health = maxHealth;//spawns at max health   Add a post-setup method later here to get around this
 
-            active = true;//is this active, this has no checks but later will be checked in drawing and will be used for removing npcs
+            //active = true;//is this active, this has no checks but later will be checked in drawing and will be used for removing npcs
         }
 
         public void Update()//could be disabled by making AI return a bool?
@@ -102,10 +102,12 @@ namespace ProjectMove.Content.Npcs
             npcBase.AI();//the ai is on the npc bases side
 
             //standard stuff for every npc
-
             position += velocity;//updating
 
-            TileCollisions();
+            if(npcBase.TileCollide())
+                TileCollisions();
+            if (npcBase.EntityCollide())
+                EntityCollisions();
 
             if (velocity.Length() < 0.1)//if velocity is below an amount set it to zero
             {
@@ -115,6 +117,32 @@ namespace ProjectMove.Content.Npcs
 
             oldPosition = position;
         }
+        private void EntityCollisions()//REMOVE
+        {
+            foreach (Npc curNpc in currentWorld.npcs)
+            {
+                //TODO check active here
+                if (curNpc.npcBase.EntityCollide() && Rect.Center != curNpc.Rect.Center && Rect.Intersects(curNpc.Rect))//good for ~200 npcs, if this is disabled can do thousands
+                {
+                    Vector2 difference = Vector2.Normalize((Rect.Center - curNpc.Rect.Center).ToVector2());
+                    //Vector2 difference = (Rect.Center - a.Rect.Center).ToVector2() / 16;//performance difference negligible
+                    position += difference;
+                    curNpc.position -= difference;
+                }
+            }
+
+            if (Rect.Intersects(currentWorld.player.Rect))
+            {
+                if(Rect.Center != currentWorld.player.Rect.Center)
+                {
+                    Vector2 difference = Vector2.Normalize((Rect.Center - currentWorld.player.Rect.Center).ToVector2());
+                    position += difference;
+                    currentWorld.player.position -= difference;
+                }
+                currentWorld.player.Hurt(8);
+            }
+        }
+
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -134,9 +162,9 @@ namespace ProjectMove.Content.Npcs
             }
 
             //health
-            string healthStr = health.ToString();
-            Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(healthStr);
-            spriteBatch.DrawString(GameMain.font_Arial_Bold, healthStr, Rect.Center.WorldToScreenCoords(), Color.White, default, new Vector2(textSize.X / 2, textSize.Y + size.Y / 2), 1, default, default);
+            //string healthStr = health.ToString();
+            //Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(healthStr);
+            //spriteBatch.DrawString(GameMain.font_Arial_Bold, healthStr, Rect.Center.WorldToScreenCoords(), Color.White, default, new Vector2(textSize.X / 2, textSize.Y + size.Y / 2), 1, default, default);
 
             //position drawn in center of screen
             //spriteBatch.DrawString(GameMain.font_Arial, position.ToString(), GameMain.ScreenSize.Center(), Color.LightGoldenrodYellow, default, Vector2.Zero, 1, default, default);
