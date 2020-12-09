@@ -53,7 +53,7 @@ namespace ProjectMove
         public static ushort selectedWallTile;
         public static ushort selectedObjectTile;
 
-        public static byte buildModeLayer = (byte)TileHandler.TileLayer.Floor;
+        public static byte buildModeLayer = (byte)TileHandler.TileLayer.Wall;
         public static bool buildMode = false;
 
         public static bool debug = false;
@@ -77,9 +77,6 @@ namespace ProjectMove
         public const float spriteScaling = 2f;//since all sprites are scaled to 2x
         public static float uiScaling = 2f;
 
-        public KeyboardState keyState;
-        public KeyboardState oldKeyState;
-
         public static Game Instance { get; set; }
 
         public GameMain()
@@ -88,7 +85,6 @@ namespace ProjectMove
             Content.RootDirectory = "Content";
             Instance = this;
         }
-
 
         #region loading
         /// <summary>
@@ -204,6 +200,20 @@ namespace ProjectMove
             }
         }
 
+
+
+        public KeyboardState keyState;
+        public KeyboardState oldKeyState;
+
+        public MouseState mouseState;
+        public MouseState oldMouseState;
+
+        public int ScrollValue
+        {
+            get => mouseState.ScrollWheelValue;
+        }
+        public int oldScrollValue;
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -211,16 +221,17 @@ namespace ProjectMove
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            mainUpdateCount++;//updating the main counter
-            keyState = Keyboard.GetState();//gets keyboard state
+            //closing the game with esc (debug)
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyState.IsKeyDown(Keys.Escape)) { Exit(); }
 
-            MouseState mouseState = Mouse.GetState();
+            mainUpdateCount++;//updating the main counter
+
+            keyState = Keyboard.GetState();//gets keyboard state
+            mouseState = Mouse.GetState();
 
             mousePos = mouseState.Position;
 
-            //closing the game with esc (debug)
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyState.IsKeyDown(Keys.Escape)) { Exit();}
-
+            #region zooming
             if (keyState.IsKeyDown(Keys.OemMinus))
             {
                 zoom -= 0.010f;
@@ -231,50 +242,49 @@ namespace ProjectMove
             {
                 zoom += 0.010f;
             }
+            #endregion
 
+            #region mode changing buttons (build, debug, etc)
             ButtonToggle(ref debug, Keys.G);
 
             ButtonToggle(ref lockCamera, Keys.C);
 
             ButtonToggle(ref buildMode, Keys.B);
+            #endregion
 
-            if (ButtonJustPressed(Keys.Up))
-            {
-                if (buildModeLayer >= 2)
-                    buildModeLayer = 0;
-                else buildModeLayer++;
-            }
-
-            if (ButtonJustPressed(Keys.Down))
-            {
-                if (buildModeLayer <= 0)
-                    buildModeLayer = 2;
-                else buildModeLayer--;
-            }
-
-
-            if (ButtonJustPressed(Keys.Left))
-            {
-                ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
-
-                if (selectedTile <= 0)
-                    selectedTile = (ushort)TileHandler.TypeCount(buildModeLayer);
-                else
-                    selectedTile--;
-            }
-
-            if (ButtonJustPressed(Keys.Right))
-            {
-                ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
-
-                if (selectedTile >= TileHandler.TypeCount(buildModeLayer))
-                    selectedTile = 0;
-                else
-                    selectedTile++;
-            }
-
+            #region build mode functions
             if (buildMode)
             {
+                if (ButtonJustPressed(Keys.Up))
+                {
+                    if (buildModeLayer >= 2)
+                        buildModeLayer = 0;
+                    else buildModeLayer++;
+                }
+                if (ButtonJustPressed(Keys.Down))
+                {
+                    if (buildModeLayer <= 0)
+                        buildModeLayer = 2;
+                    else buildModeLayer--;
+                }
+
+                if (ScrollValue > oldScrollValue || ButtonJustPressed(Keys.Left))
+                {
+                    ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
+                    if (selectedTile <= 0)
+                        selectedTile = (ushort)TileHandler.TypeCount(buildModeLayer);
+                    else
+                        selectedTile--;
+                }
+                else if (ScrollValue < oldScrollValue || ButtonJustPressed(Keys.Right))
+                {
+                    ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
+                    if (selectedTile >= TileHandler.TypeCount(buildModeLayer))
+                        selectedTile = 0;
+                    else
+                        selectedTile++;
+                }
+
                 Point mouseTileCoord = mousePos.ScreenToTileCoords();
                 if (mainWorld.IsTileInWorld(mouseTileCoord))
                 {
@@ -288,12 +298,15 @@ namespace ProjectMove
                     }
                 }
             }
+            #endregion
 
             mainWorld.Update();//all player and npc updates in the world
 
 
-
             oldKeyState = keyState;
+            oldMouseState = mouseState;
+            oldScrollValue = ScrollValue;
+
             base.Update(gameTime);
         }
 
@@ -431,7 +444,7 @@ namespace ProjectMove
 
             spriteBatch.DrawString(font_Arial, "FPS: " + Math.Round(counter / fps.Count, 2).ToString(), ScreenSize.ToVector2() / 40, Color.LightGoldenrodYellow, default, default, 1f, default, default);
 
-            if (fps.Count >= 30)
+            if (fps.Count >= 15)//how many frames to average
             {
                 fps.RemoveAt(0);
             }

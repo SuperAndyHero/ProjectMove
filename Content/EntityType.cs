@@ -28,7 +28,7 @@ namespace ProjectMove.Content
         public Vector2 oldPosition    = new Vector2();
         public Vector2 oldVelocity    = new Vector2();
         public Vector2 size           = new Vector2(16, 16);
-        //public bool active            = false;unused
+        //public bool active            = false; unused
 
         //unimportant variables (stuff that would not be tracked by the server)
         internal World currentWorld;
@@ -48,6 +48,13 @@ namespace ProjectMove.Content
         {
             get { return new Rectangle(oldPosition.ToPoint(), size.ToPoint()); }
             set { oldPosition = value.Location.ToVector2(); size = value.Size.ToVector2(); }
+        }
+
+        internal byte GetDirection(Vector2 direction)
+        {
+            byte dirX = (byte)(direction.X < 0 ? 3 : 2);
+            byte dirY = (byte)(direction.Y < 0 ? 1 : 0);
+            return Math.Abs(direction.Y) >= Math.Abs(direction.X) ? dirY : dirX;
         }
 
         public bool TileCollisions(float wallDrag = 0.9f)

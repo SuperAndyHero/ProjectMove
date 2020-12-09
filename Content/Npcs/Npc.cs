@@ -104,10 +104,10 @@ namespace ProjectMove.Content.Npcs
             //standard stuff for every npc
             position += velocity;//updating
 
-            if(npcBase.TileCollide())
-                TileCollisions();
             if (npcBase.EntityCollide())
                 EntityCollisions();
+            if (npcBase.TileCollide())
+                TileCollisions();
 
             if (velocity.Length() < 0.1)//if velocity is below an amount set it to zero
             {
@@ -117,7 +117,8 @@ namespace ProjectMove.Content.Npcs
 
             oldPosition = position;
         }
-        private void EntityCollisions()//REMOVE
+
+        private void EntityCollisions()//only gets called if the npc has entity collisions enabled
         {
             foreach (Npc curNpc in currentWorld.npcs)
             {
