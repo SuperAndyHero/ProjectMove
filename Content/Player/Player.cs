@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Design;
 using System;
 using ProjectMove.Content.Npcs;
 using ProjectMove.Content.Tiles;
-using System.Reflection.Metadata.Ecma335;
 
 namespace ProjectMove.Content.Player
 {
@@ -36,6 +35,8 @@ namespace ProjectMove.Content.Player
         public int   maxHealth = Default_MaxHealth;
         //public float WallDrag = ?; may just be based off decel, for icy tiles
         public int   invulnLength = Default_InvulnLength;
+        public bool entityCollide = true;
+        public bool noHeal = false;
         #endregion
 
         #region other const values
@@ -68,15 +69,24 @@ namespace ProjectMove.Content.Player
 
         private Vector2 moveDir = Vector2.Zero;
 
-        public void Hurt(int damage)
+        public void Hurt(int amount)
         {
             if (!IsInvuln)
             {
                 IsInvuln = true;
-                health -= damage;
+                health -= amount;
                 healthOpacity = 255;
-                if (health < 0)
-                    health = 0;
+                health = MathHelper.Clamp(health, 0, maxHealth);
+            }
+        }
+
+        public void Heal(int amount)
+        {
+            if (!noHeal)
+            {
+                health += amount;
+                healthOpacity = 255;
+                health = MathHelper.Clamp(health, 0, maxHealth);
             }
         }
 

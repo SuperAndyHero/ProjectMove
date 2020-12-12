@@ -14,6 +14,7 @@ namespace ProjectMove.Content.Npcs.NpcTypes
         {
             npc.displayName = "Heat Seeker";
             npc.maxHealth = 200;
+            npc.damage = 10;
             npc.size = new Vector2(16, 16);
         }
         public override void AI()

@@ -5,20 +5,34 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Design;
 using System;
-using System.CodeDom.Compiler;
 using ProjectMove.Content.Tiles;
+using ProjectMove.Content.Npcs;
 
 namespace ProjectMove.Content
 {
-    public abstract class EntityBase//used for everything besides levels
+    public abstract class EntityBase//used for everything besides levels and players
     {
         public virtual string TextureName() { return null; }
 
-        public virtual bool EntityCollide() => true;//can be used for physics (npcs) or oh hit effects (projectiles)
+        public virtual bool NpcInteract() => true;//can be used for physics (npcs) or oh hit effects (projectiles)
+        public virtual bool TileInteract() => true;
+        public virtual bool PlayerInteract() => true;
 
-        public virtual bool TileCollide() => true;
+        /// <summary>
+        /// Return false to stop npc collisions to taking place
+        /// </summary>
+        /// <param name="hitNpc"></param>
+        /// <returns></returns>
+        public virtual bool OnNpcCollide(Npc hitNpc) => true;
+        /// <summary>
+        /// Return false to stop player collisions to taking place
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public virtual bool OnPlayerCollide(Player.Player player) => true;
+        public virtual void OnTileCollide() { }
 
-        //maybe move spriteOffset here as a virtual?
+        //?maybe move spriteOffset here as a virtual?
     }
 
     public abstract class Entity

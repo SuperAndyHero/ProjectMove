@@ -47,7 +47,7 @@ namespace ProjectMove.Content.Levels.LevelTypes
         public override void Setup(World world)
         {
             world.player.position = Size().TileToWorldCoords().ToVector2() / 2;
-            world.SpawnNpc(GameID.GetNpcID<Dummy>(), world.player.position + (Vector2.One * 105), Vector2.Zero);
+            //world.SpawnNpc(GameID.GetNpcID<Dasher>(), world.player.position + (Vector2.One * 120), Vector2.Zero);
             world.SpawnNpc(GameID.GetNpcID<Dummy>(), world.player.position + (Vector2.One * 100), Vector2.Zero);
             //for (int i = 0; i < 50; i++)
             //{

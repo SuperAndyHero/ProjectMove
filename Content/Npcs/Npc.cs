@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using ProjectMove.Content.Npcs.NpcTypes;
+using ProjectMove.Content.Player;
 using ProjectMove;
 using static ProjectMove.GameID;
 
@@ -41,10 +42,7 @@ namespace ProjectMove.Content.Npcs
             }
         }
 
-        public static void LoadNpcTextures()
-        {
-            BaseTypes.LoadObjectTextures(ref NpcTexture, "Npcs/");
-        }
+        public static void LoadNpcTextures() => BaseTypes.LoadObjectTextures(ref NpcTexture, "Npcs/");
     }
     #endregion
 
@@ -71,11 +69,13 @@ namespace ProjectMove.Content.Npcs
 
         public ushort type;//the type, set when this is spawned    (this could be changed to a readonly by adding a ctor to this class, minor change)
 
-        public int maxHealth;//the health cap (here instead on virtual on the base to enemies of the same type can vary in max health
+        public int damage = 0;//the amount of damage this npc does //unused
+
+        public int maxHealth = 10;//the health cap (here instead on virtual on the base to enemies of the same type can vary in max health
 
         public int health;//the current health
 
-        public int damage;//the amount of damage this npc does //unused
+        public bool Invuln = false;
 
         public string displayName;//name to be seen in-game, set in the npc base else gets autoset to the class name 
 
@@ -104,15 +104,16 @@ namespace ProjectMove.Content.Npcs
             //standard stuff for every npc
             position += velocity;//updating
 
-            if (npcBase.EntityCollide())
+            if (npcBase.NpcInteract())
                 EntityCollisions();
-            if (npcBase.TileCollide())
-                TileCollisions();
+            if (npcBase.PlayerInteract())
+                PlayerContact();
+            if (npcBase.TileInteract())
+                if (TileCollisions())
+                    npcBase.OnTileCollide();
 
             if (velocity.Length() < 0.1)//if velocity is below an amount set it to zero
-            {
                 velocity = Vector2.Zero;
-            }
             //increase health by regen rate, once that exists as a value (for natural regen and regen effects?)
 
             oldPosition = position;
@@ -123,24 +124,34 @@ namespace ProjectMove.Content.Npcs
             foreach (Npc curNpc in currentWorld.npcs)
             {
                 //TODO check active here
-                if (curNpc.npcBase.EntityCollide() && Rect.Center != curNpc.Rect.Center && Rect.Intersects(curNpc.Rect))//good for ~200 npcs, if this is disabled can do thousands
+                if (curNpc.npcBase.NpcInteract() && Rect.Intersects(curNpc.Rect) && Rect.Center != curNpc.Rect.Center)//good for ~200 npcs, if this is disabled can do thousands
                 {
-                    Vector2 difference = Vector2.Normalize((Rect.Center - curNpc.Rect.Center).ToVector2());
-                    //Vector2 difference = (Rect.Center - a.Rect.Center).ToVector2() / 16;//performance difference negligible
-                    position += difference;
-                    curNpc.position -= difference;
+                    if (npcBase.OnNpcCollide(curNpc))
+                    {
+                        Vector2 difference = Vector2.Normalize((Rect.Center - curNpc.Rect.Center).ToVector2());
+                        //Vector2 difference = (Rect.Center - a.Rect.Center).ToVector2() / 16;//performance difference negligible
+                        position += difference / ((Rect.Width + Rect.Height) / 32);
+                        curNpc.position -= difference;
+                    }
                 }
             }
+        }
 
+        private void PlayerContact()
+        {
             if (Rect.Intersects(currentWorld.player.Rect))
             {
-                if(Rect.Center != currentWorld.player.Rect.Center)
+                if(damage > 0)
+                    currentWorld.player.Hurt(damage);
+                else if (damage < 0)
+                    currentWorld.player.Heal(damage);
+
+                if (npcBase.OnPlayerCollide(currentWorld.player) && Rect.Center != currentWorld.player.Rect.Center)
                 {
                     Vector2 difference = Vector2.Normalize((Rect.Center - currentWorld.player.Rect.Center).ToVector2());
-                    position += difference;
+                    position += difference / ((Rect.Width + Rect.Height) / 32);
                     currentWorld.player.position -= difference;
                 }
-                currentWorld.player.Hurt(8);
             }
         }
 
