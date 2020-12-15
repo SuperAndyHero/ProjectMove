@@ -11,16 +11,38 @@ using ProjectMove.Content.Npcs;
 using ProjectMove.Content.Tiles;
 using System.ComponentModel;
 using ProjectMove.Content;
+using System.IO;
 
 namespace ProjectMove
 {
     public static class Extensions
     {
-        public static void LoadObjectTextures<T>(this List<T> list, ref Texture2D[] texArray, string directory) where T : EntityBase
+        public static void LoadObjectTextures<T>(this List<T> list, ref Texture2D[] texArray, string directory) where T : MainBase
         {
             texArray = new Texture2D[list.Count];
             for (int i = 0; i < list.Count; i++)
             {
+                string location = list[i].TexturePath() ?? directory + (list[i].TextureName() ?? list[i].GetType().Name);
+                try
+                {
+                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>(location);
+                }
+                catch (ContentLoadException)
+                {
+                    System.Diagnostics.Debug.WriteLine("Missing Texture: " + location);
+                    texArray[i] = GameMain.Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
+                }
+            }
+        }
+
+        public static void LoadWallTextures<T>(this List<T> list, ref Texture2D[] texArray, ref Texture2D[] texBottomArray, ref Texture2D[] texSideArray) where T : WallBase
+        {
+            texArray = new Texture2D[list.Count];
+            texBottomArray = new Texture2D[list.Count];
+            texSideArray = new Texture2D[list.Count];
+            for (int i = 0; i < list.Count; i++)
+            {
+                string directory = list[i].TexturePath() ?? TileHandler.tileTextureLocation;
                 string location = directory + (list[i].TextureName() ?? list[i].GetType().Name);
                 try
                 {
@@ -30,6 +52,37 @@ namespace ProjectMove
                 {
                     System.Diagnostics.Debug.WriteLine("Missing Texture: " + location);
                     texArray[i] = GameMain.Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
+                }
+
+                if (list[i].DrawSides())
+                {
+                    string locationBottom = directory + (list[i].BottomTextureName() ?? list[i].GetType().Name + "_Bottom");
+                    try
+                    {
+                        texBottomArray[i] = GameMain.Instance.Content.Load<Texture2D>(locationBottom);
+                    }
+                    catch (ContentLoadException)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Missing Texture: " + locationBottom);
+                        texBottomArray[i] = GameMain.Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
+                    }
+
+                    string locationSide = directory + (list[i].SideTextureName() ?? list[i].GetType().Name + "_Side");
+                    try
+                    {
+                        texBottomArray[i] = GameMain.Instance.Content.Load<Texture2D>(locationBottom);
+                    }
+                    catch (ContentLoadException)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Missing Texture: " + locationBottom);
+                        texBottomArray[i] = GameMain.Instance.Content.Load<Texture2D>("Debug1");//fallback to this texture
+                    }
+                }
+                else
+                {
+                    Texture2D blank = texBottomArray[i] = GameMain.Instance.Content.Load<Texture2D>("Blank");
+                    texBottomArray[i] = blank;
+                    texSideArray[i] = blank;
                 }
             }
         }

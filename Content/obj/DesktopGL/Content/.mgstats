@@ -1,6 +1,7 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "D:/Documents/ProjectMove/Content/Arial.spritefont","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Arial.xnb","FontDescriptionProcessor","SpriteFontContent",2008,21538,0.2005679
 "D:/Documents/ProjectMove/Content/Arial_Bold.spritefont","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Arial_Bold.xnb","FontDescriptionProcessor","SpriteFontContent",2014,21538,0.0152425
+"D:/Documents/ProjectMove/Content/Blank.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Blank.xnb","TextureProcessor","Texture2DContent",130,149,0.1780437
 "D:/Documents/ProjectMove/Content/Debug.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Debug.xnb","TextureProcessor","Texture2DContent",140,1109,0.0142795
 "D:/Documents/ProjectMove/Content/Debug1.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Debug1.xnb","TextureProcessor","Texture2DContent",203,1109,0.1206459
 "D:/Documents/ProjectMove/Content/Effects/Zoom.fx","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Effects/Zoom.xnb","EffectProcessor","CompiledEffectContent",411,880,0.3686831

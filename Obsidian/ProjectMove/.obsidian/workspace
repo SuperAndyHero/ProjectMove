@@ -1,0 +1,100 @@
+{
+  "main": {
+    "id": "86192d44f9cc6354",
+    "type": "split",
+    "children": [
+      {
+        "id": "5912097569282ad1",
+        "type": "leaf",
+        "active": true,
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Bases Structure/Main Base.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7946139b434952be",
+    "type": "split",
+    "children": [
+      {
+        "id": "8f7bc8cdafa1a462",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cd7ee19b5a6749fe",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "03d24d8eb2a3b2a3",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "a8e2b524e4e5ac06",
+    "type": "split",
+    "children": [
+      {
+        "id": "2e52e29ba64a9a20",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "22a373b60a98d3bb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Bases Structure/Main Base.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "lastOpenFiles": [
+    "Bases Structure/Main Base.md",
+    "Bases Structure/Level Base.md",
+    "Bases Structure/Untitled.md",
+    "Bases Structure/Entity Base.md",
+    "Bases Structure/Npc Base.md",
+    "Bases Structure/Particle Base.md",
+    "Example.md",
+    "Untitled.md",
+    "Bases Structure/TileBases/Untitled.md",
+    "Bases Structure/Untitled 1.md"
+  ]
+}

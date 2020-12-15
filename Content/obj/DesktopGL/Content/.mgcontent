@@ -6,6 +6,7 @@
   <SourceFiles>
     <File>D:/Documents/ProjectMove/Content/Arial.spritefont</File>
     <File>D:/Documents/ProjectMove/Content/Arial_Bold.spritefont</File>
+    <File>D:/Documents/ProjectMove/Content/Blank.png</File>
     <File>D:/Documents/ProjectMove/Content/Debug.png</File>
     <File>D:/Documents/ProjectMove/Content/Debug1.png</File>
     <File>D:/Documents/ProjectMove/Content/Effects/Zoom.fx</File>
@@ -28,6 +29,7 @@
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Stone.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
