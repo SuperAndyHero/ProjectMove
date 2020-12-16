@@ -103,7 +103,7 @@ namespace ProjectMove.Content
                             //TODO
                         }
 
-                        MainBase objectBase = currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base;
+                        ObjectBase objectBase = currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base;
                         if(Collide(currentTilePos, objectBase.CollisionRect(), objectBase.IsSolid()))
                         {
                             //TODO //objectBase.OnCollide(this)

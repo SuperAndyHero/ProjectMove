@@ -22,6 +22,8 @@
     <File>D:/Documents/ProjectMove/Content/Player/Player.png</File>
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Air.png</File>
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Brick.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Brick_Bottom.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Brick_Side.png</File>
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Desk.png</File>
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Dirt.png</File>
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Grass.png</File>
@@ -29,6 +31,8 @@
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Stone.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

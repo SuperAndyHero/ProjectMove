@@ -85,6 +85,14 @@ namespace ProjectMove
 
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {
+                    wallLayer[i, j].DrawSides(spriteBatch, i, j); } }
+
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
+                    wallLayer[i, j].DrawBottom(spriteBatch, i, j); } }
+
+            for (int i = 0; i < Size.X; i++) {
+                for (int j = 0; j < Size.Y; j++) {
                     wallLayer[i, j].Draw(spriteBatch, i, j);
                     objectLayer[i, j].Draw(spriteBatch, i, j); } } //these are both drawn on the same "layer" so lower walls draw over higher objects
         }

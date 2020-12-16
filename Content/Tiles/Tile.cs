@@ -109,7 +109,7 @@ namespace ProjectMove.Content.Tiles
 
         public static void LoadTileTextures()
         {
-            WallBases.LoadObjectTextures(ref WallTexture, tileTextureLocation);
+            WallBases.LoadWallTextures(ref WallTexture, ref WallBottomTexture, ref WallSideTexture);
             ObjectBases.LoadObjectTextures(ref ObjectTexture, tileTextureLocation);
             FloorBases.LoadObjectTextures(ref FloorTexture, tileTextureLocation);
         }
@@ -149,7 +149,13 @@ namespace ProjectMove.Content.Tiles
 
     public abstract class WallBase : TileBase
     {
-        public virtual bool DrawSides() => false;
+        /// <summary>
+        /// if this base should load the side textures
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool HasEdges() => true;
+        public virtual bool DrawSides(SpriteBatch spriteBatch, int i, int j) => HasEdges();
+        public virtual bool DrawBottom(SpriteBatch spriteBatch, int i, int j) => HasEdges();
         public virtual string BottomTextureName() { return null; }
         public virtual string SideTextureName() { return null; }
 
@@ -161,7 +167,7 @@ namespace ProjectMove.Content.Tiles
 
     public abstract class FloorBase : TileBase
     {
-        public virtual new bool  IsSolid() => false;
+        public virtual new bool IsSolid() => false;
     }
 
 
@@ -203,16 +209,37 @@ namespace ProjectMove.Content.Tiles
         public WallTile(ushort tileType = 0) 
         { 
             type = tileType;
-            drawBottom = false;
-            drawLeft = false;
-            drawRight = false;
+            borderingEmpty = true;
         }
         public WallBase Base { get => TileHandler.WallBases[type]; }
         public ushort type;
 
-        private bool drawBottom;
-        private bool drawLeft;
-        private bool drawRight;
+        private bool borderingEmpty;
+
+        public void DrawSides(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (Base.DrawSides(spriteBatch, i, j) && borderingEmpty)
+            {
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect
+                Point drawPos = (rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize));
+                Point drawSize = (TileHandler.WallSideTexture[type].Size() * GameMain.spriteScaling).ToPoint();
+
+                spriteBatch.Draw(TileHandler.WallSideTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(TileHandler.WallSideTexture[type].Width, 0), default, default);
+                spriteBatch.Draw(TileHandler.WallSideTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(-rect1.Size.X / 2, 0), SpriteEffects.FlipHorizontally, default);
+            }
+        }
+
+        public void DrawBottom(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (Base.DrawBottom(spriteBatch, i, j) && borderingEmpty)
+            {
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect
+                Point drawPos = ((rect1.Location + new Point(0, rect1.Size.Y)) + (new Point(i, j).MultBy(TileHandler.tileSize)));
+                Point drawSize = new Point(rect1.Size.X, (int)(TileHandler.WallBottomTexture[type].Height * GameMain.spriteScaling));
+
+                spriteBatch.Draw(TileHandler.WallBottomTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), Color.White);
+            }
+        }
 
         public void Draw(SpriteBatch spriteBatch, int i, int j){
             if (Base.Draw(spriteBatch, i, j)){//if this tile should be drawn
@@ -221,13 +248,6 @@ namespace ProjectMove.Content.Tiles
                 Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize));
                 Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize);
                 spriteBatch.Draw(TileHandler.WallTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
-                if (true)
-                {
-                    Vector2 drawPosBottom = ((rect1.Location.ToVector2() + new Vector2(0, rect1.Size.Y)) + (new Vector2(i, j) * TileHandler.tileSize));
-                    Vector2 drawSizeBottom = new Vector2(rect1.Size.X, rect1.Size.Y * 0.5f) / TileHandler.tileSize;
-
-                    spriteBatch.Draw(TileHandler.WallTexture[type], drawPosBottom.WorldToScreenCoords(), null, Color.White, default, default, drawSizeBottom * GameMain.spriteScaling, default, default);
-                }
             }
         }
         public void PostDraw(SpriteBatch spriteBatch, int i, int j) {

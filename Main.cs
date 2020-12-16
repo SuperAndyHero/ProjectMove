@@ -312,6 +312,8 @@ namespace ProjectMove
 
         protected override void Draw(GameTime gameTime)
         {
+            //TODO: move tiles to RT and only redraw when needed
+
             GraphicsDevice.SetRenderTarget(tileTarget);//everything will now draw to the render target
             GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);

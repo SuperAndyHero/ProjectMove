@@ -213,6 +213,30 @@
 /processorParam:TextureFormat=Color
 /build:Tiles/Textures/Brick.png
 
+#begin Tiles/Textures/Brick_Bottom.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Tiles/Textures/Brick_Bottom.png
+
+#begin Tiles/Textures/Brick_Side.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Tiles/Textures/Brick_Side.png
+
 #begin Tiles/Textures/Desk.png
 /importer:TextureImporter
 /processor:TextureProcessor
