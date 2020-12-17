@@ -165,9 +165,19 @@ namespace ProjectMove.Content.Player
         {
             frame.X = Direction * FrameWidth;//Direction is set in Update
             if (moveDir != Vector2.Zero)
-                frame.Y = ((GameMain.mainUpdateCount / 8) % 4) * FrameHeight;
+                WalkingFrame();
             else
-                frame.Y = 0;
+                IdleFrame();
+        }
+
+        private void WalkingFrame()
+        {
+            frame.Y = ((GameMain.mainUpdateCount / 8) % 4) * FrameHeight;
+        }
+
+        private void IdleFrame()
+        {
+            frame.Y = 0;
         }
 
         public const int FrameCountX = 4;
@@ -192,7 +202,7 @@ namespace ProjectMove.Content.Player
             Rectangle playerFrame = new Rectangle(frame, FrameSize);
             //sprite
 
-            spriteBatch.Draw(GameMain.playerTexture, Center.WorldToScreenCoords(), playerFrame, PlayerColor, default, FrameSize.ToVector2() / 2, GameMain.spriteScaling, default, default);
+            spriteBatch.Draw(GameMain.playerTexture, new Vector2(Center.X, position.Y).WorldToScreenCoords() - new Vector2(0, (FrameSize.Y * 2 - size.Y)), playerFrame, PlayerColor, default, new Vector2(FrameSize.X / 2, 0), GameMain.spriteScaling, default, default);
 
             //health text
             string healthStr = health.ToString();
@@ -207,18 +217,18 @@ namespace ProjectMove.Content.Player
                 
                 //hitbox
                 spriteBatch.Draw(GameMain.debugTexture, Rect.WorldToScreenCoords(), Color.Red);
-
-                for (int i = -1; i < 2; i++)
-                {
-                    for (int j = -1; j < 2; j++)
-                    {
-                        Point tilePos = Center.WorldToTileCoords() + new Point(i, j);
-                        if (currentWorld.IsTileInWorld(tilePos))
-                        {
-                            spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(0, j * 16, i * 16));
-                        }  
-                    }
-                }
+                s
+                //for (int i = -1; i < 2; i++)
+                //{
+                //    for (int j = -1; j < 2; j++)
+                //    {
+                //        Point tilePos = Center.WorldToTileCoords() + new Point(i, j);
+                //        if (currentWorld.IsTileInWorld(tilePos))
+                //        {
+                //            spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(0, j * 16, i * 16));
+                //        }  
+                //    }
+                //}
             }
         }
         #endregion

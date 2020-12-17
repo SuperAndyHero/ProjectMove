@@ -58,6 +58,9 @@ namespace ProjectMove.Content.Npcs
 
         public virtual void AI() { }
 
+        public virtual int FrameCountX() { return 0; }
+        public virtual int FrameCountY() { return 0; }
+
         public virtual bool Draw(SpriteBatch spriteBatch) { return true; }
     }
     #endregion
@@ -78,6 +81,8 @@ namespace ProjectMove.Content.Npcs
         public bool Invuln = false;
 
         public string displayName;//name to be seen in-game, set in the npc base else gets autoset to the class name 
+
+        public float spriteScale = 1f;
 
         public void Initialize(World world)//this is a seperate initalize method, levels use a ctor for this instead
         {
@@ -108,8 +113,11 @@ namespace ProjectMove.Content.Npcs
                 EntityCollisions();
             if (npcBase.PlayerInteract())
                 PlayerContact();
-            if (npcBase.TileInteract())
-                if (TileCollisions())
+
+            bool tileCollide = npcBase.TileCollide();
+            bool tileInteract = npcBase.TileInteract();
+            if (tileInteract || tileCollide)
+                if (TileCollisions(tileCollide, tileInteract) && tileCollide)
                     npcBase.OnTileCollide();
 
             if (velocity.Length() < 0.1)//if velocity is below an amount set it to zero
@@ -155,6 +163,19 @@ namespace ProjectMove.Content.Npcs
             }
         }
 
+        public int FrameWidth { 
+            get {
+                int count = npcBase.FrameCountX();
+                int size = NpcHandler.NpcTexture[type].Width;
+                return count == 0 ? size : size / count; } }
+
+        public int FrameHeight { 
+            get {
+                int count = npcBase.FrameCountY();
+                int size = NpcHandler.NpcTexture[type].Height;
+                return count == 0 ? size : size / count; } }
+
+        public Point FrameSize { get { return new Point(FrameWidth, FrameHeight); } }
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -162,16 +183,12 @@ namespace ProjectMove.Content.Npcs
 
             //sprite
             if (npcBase.Draw(spriteBatch))
-            {
-                spriteBatch.Draw(NpcHandler.NpcTexture[type], Rect.WorldToScreenCoords(), Color.White);
-            }
+                spriteBatch.Draw(NpcHandler.NpcTexture[type], Center.WorldToScreenCoords(), null, Color.White, default, NpcHandler.NpcTexture[type].Size() / 2, spriteScale * GameMain.spriteScaling, default, default);
 
             //debug
             if (GameMain.debug)
-            {
-                //hitbox
-                spriteBatch.Draw(GameMain.debugTexture, Rect.WorldToScreenCoords(), Color.Blue);
-            }
+                spriteBatch.Draw(GameMain.debugTexture, Rect.WorldToScreenCoords(), Color.Blue); //hitbox
+        }
 
             //health
             //string healthStr = health.ToString();

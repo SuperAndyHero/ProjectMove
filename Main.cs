@@ -310,6 +310,8 @@ namespace ProjectMove
             base.Update(gameTime);
         }
 
+        public Color backgroundColor = Color.CornflowerBlue; ////new Color(33, 24, 27);
+
         protected override void Draw(GameTime gameTime)
         {
             //TODO: move tiles to RT and only redraw when needed
@@ -336,7 +338,7 @@ namespace ProjectMove
 
 
             GraphicsDevice.SetRenderTarget(mainTarget);
-            GraphicsDevice.Clear(Color.CornflowerBlue);//background color
+            GraphicsDevice.Clear(backgroundColor);//background color
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.Draw(tileTarget, Vector2.Zero, Color.White);
             spriteBatch.Draw(entityTarget, Vector2.Zero, Color.White);

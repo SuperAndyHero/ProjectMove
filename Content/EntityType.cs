@@ -19,7 +19,8 @@ namespace ProjectMove.Content
     public abstract class EntityBase : MainBase//Npcs and projectiles
     {
         public virtual bool NpcInteract() => true;//can be used for physics (npcs) or oh hit effects (projectiles)
-        public virtual bool TileInteract() => true;
+        public virtual bool TileInteract() => true;//if this should interact with tiles (activate onTileCollide)
+        public virtual bool TileCollide() => true;//if this should actually collide with tiles
         public virtual bool PlayerInteract() => true;
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace ProjectMove.Content
         //unimportant variables (stuff that would not be tracked by the server)
         internal World currentWorld;
         internal Point frame = Point.Zero;
+        //internal Vector2 spriteOffset
 
         public Vector2 Center
         {
@@ -78,7 +80,7 @@ namespace ProjectMove.Content
             return Math.Abs(direction.Y) >= Math.Abs(direction.X) ? dirY : dirX;
         }
 
-        public bool TileCollisions(float wallDrag = 0.9f)
+        public bool TileCollisions(bool tileCollide = true, bool tileTrigger = true, float wallDrag = 0.9f)
         {
             bool collided = false;
             for (int i = -1; i < 2; i++)
@@ -92,21 +94,21 @@ namespace ProjectMove.Content
                     {
                         //these are by reference iirc
                         FloorBase floorBase = currentWorld.floorLayer[currentTilePos.X, currentTilePos.Y].Base;
-                        if (Collide(currentTilePos, floorBase.CollisionRect(), floorBase.IsSolid()))
+                        if (Collide(currentTilePos, floorBase.CollisionRect(), tileCollide ? floorBase.IsSolid() : false) && tileTrigger)
                         {
                             //TODO
                         }
 
                         WallBase wallBase = currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y].Base;
-                        if (Collide(currentTilePos, wallBase.CollisionRect(), wallBase.IsSolid()))
+                        if (Collide(currentTilePos, wallBase.CollisionRect(), tileCollide ? wallBase.IsSolid() : false) && tileTrigger)
                         {
                             //TODO
                         }
 
                         ObjectBase objectBase = currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base;
-                        if(Collide(currentTilePos, objectBase.CollisionRect(), objectBase.IsSolid()))
+                        if (Collide(currentTilePos, objectBase.CollisionRect(), tileCollide ? objectBase.IsSolid() : false) && tileTrigger)
                         {
-                            //TODO //objectBase.OnCollide(this)
+                            //TODO //tileBase.OnCollide(this)
                         }
                     }
                 }
@@ -120,7 +122,7 @@ namespace ProjectMove.Content
                 {
                     Rectangle testRect = new Rectangle(location.TileToWorldCoords() + tileRect.Location, tileRect.Size);
 
-                    if(testRect.Intersects(Rect))
+                    if (testRect.Intersects(Rect))
                     {
                         if (solid)//if solid, so position changing stuff, else just return
                         {
