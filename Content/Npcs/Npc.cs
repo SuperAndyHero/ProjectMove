@@ -188,7 +188,6 @@ namespace ProjectMove.Content.Npcs
             //debug
             if (GameMain.debug)
                 spriteBatch.Draw(GameMain.debugTexture, Rect.WorldToScreenCoords(), Color.Blue); //hitbox
-        }
 
             //health
             //string healthStr = health.ToString();

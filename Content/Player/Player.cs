@@ -217,18 +217,6 @@ namespace ProjectMove.Content.Player
                 
                 //hitbox
                 spriteBatch.Draw(GameMain.debugTexture, Rect.WorldToScreenCoords(), Color.Red);
-                s
-                //for (int i = -1; i < 2; i++)
-                //{
-                //    for (int j = -1; j < 2; j++)
-                //    {
-                //        Point tilePos = Center.WorldToTileCoords() + new Point(i, j);
-                //        if (currentWorld.IsTileInWorld(tilePos))
-                //        {
-                //            spriteBatch.Draw(GameMain.debugTexture, new Rectangle((Center.WorldToTileCoords() + new Point(i, j)).TileToScreenCoords(), new Point(TileHandler.tileSize)), new Color(0, j * 16, i * 16));
-                //        }  
-                //    }
-                //}
             }
         }
         #endregion

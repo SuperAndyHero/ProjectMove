@@ -23,7 +23,7 @@ namespace ProjectMove
         public static Dictionary<Type, ushort> ObjectID;//these could be one list, but are not for performance sake
         public static Dictionary<Type, ushort> FloorID;
 
-        public static Dictionary<Type, ushort> LevelID;
+        //public static Dictionary<Type, ushort> LevelID;
 
         public static Dictionary<Type, ushort> NpcID;
 
@@ -44,10 +44,10 @@ namespace ProjectMove
             return FloorID[typeof(T)];
         }
 
-        public static ushort GetLevelID<T>() where T : LevelBase
-        {
-            return LevelID[typeof(T)];
-        }
+        //public static ushort GetLevelID<T>() where T : LevelBase
+        //{
+        //    return LevelID[typeof(T)];
+        //}
 
         public static ushort GetNpcID<T>() where T : NpcBase
         {

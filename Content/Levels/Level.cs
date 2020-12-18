@@ -20,42 +20,30 @@ namespace ProjectMove.Content.Levels
 
         public static void Initialize()
         {
-            BaseTypes = new List<Type>();
+            //BaseTypes = new List<Type>();
 
-            LevelID = new Dictionary<Type, ushort>();
+            //LevelID = new Dictionary<Type, ushort>();
 
-            List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
-                      .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(LevelBase)) && t.Namespace == "ProjectMove.Content.Levels.LevelTypes")
-                      .ToList();
+            //List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
+            //          .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(LevelBase)) && t.Namespace == "ProjectMove.Content.Levels.LevelTypes")
+            //          .ToList();
 
-            for (ushort i = 0; i < TypeList.Count; i++)
-            {
-                Type type = TypeList[i];
+            //for (ushort i = 0; i < TypeList.Count; i++)
+            //{
+            //    Type type = TypeList[i];
 
-                BaseTypes.Add(type);
-                LevelID.Add(type, i);
-            }
+            //    BaseTypes.Add(type);
+            //    LevelID.Add(type, i);
+            //}
         }
 
-        public static void LoadLevelTextures()
-        {
-
-        }
-
-        //public static ushort LevelIdByName(string name)
+        //public static void LoadLevelTextures()
         //{
-        //    ushort index = 0;
-        //    foreach (string str in LevelInternalNames)
-        //    {
-        //        if (str == name)
-        //            return index;
-        //        index++;
-        //    }
-        //    return 0;
+
         //}
     }
 
-    public abstract class LevelBase //there is no level object, just the base which is directly used by the world
+    public abstract class LevelBase
     {
         /// <summary>
         /// Called before everything, as this is created

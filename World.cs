@@ -46,18 +46,23 @@ namespace ProjectMove
         {
             npcs = new List<Npc>();
 
-            level = (LevelBase)Activator.CreateInstance(LevelHandler.BaseTypes[GetLevelID<DebugScene>()]);
+            SetLevel<DebugScene>();
+
+            player = new Player();
+            player.Initialize(this);
+
+            level.Setup(this);
+        }
+
+        public void SetLevel<T>()
+        {
+            level = (LevelBase)Activator.CreateInstance(typeof(T));
 
             objectLayer = new ObjectTile[Size.X, Size.Y];
             wallLayer = new WallTile[Size.X, Size.Y];
             floorLayer = new FloorTile[Size.X, Size.Y];
 
             GenerateWorld();
-
-            player = new Player();
-            player.Initialize(this);
-
-            level.Setup(this);
         }
 
 
@@ -83,13 +88,12 @@ namespace ProjectMove
                 for (int j = 0; j < Size.Y; j++) {
                     floorLayer[i, j].Draw(spriteBatch, i, j); } }
 
-            for (int i = 0; i < Size.X; i++) {
-                for (int j = 0; j < Size.Y; j++) {
-                    wallLayer[i, j].DrawSides(spriteBatch, i, j); } }
-
-            for (int i = 0; i < Size.X; i++) {
-                for (int j = 0; j < Size.Y; j++) {
+            for (int j = 0; j < Size.Y; j++) {
+                for (int i = 0; i < Size.X; i++) {
+                    wallLayer[i, j].DrawSides(spriteBatch, i, j); } 
+                for (int i = 0; i < Size.X; i++) {
                     wallLayer[i, j].DrawBottom(spriteBatch, i, j); } }
+
 
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {

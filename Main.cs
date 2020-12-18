@@ -39,13 +39,6 @@ namespace ProjectMove
 
         public static World mainWorld;
 
-        public RenderTarget2D mainTarget;
-        public RenderTarget2D tileTarget;
-        public RenderTarget2D entityTarget;
-        public RenderTarget2D postTileTarget;
-        public RenderTarget2D screenTarget;
-
-
         public static float zoom = 1f;
         public Effect zoomEffect;
 
@@ -98,13 +91,14 @@ namespace ProjectMove
             screenWidth = graphics.PreferredBackBufferWidth;
             screenHeight = graphics.PreferredBackBufferHeight;
 
-            mainTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            mainTarget = DefaultTarget;
 
-            tileTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-            entityTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-            postTileTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-            screenTarget = new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            tileTarget = DefaultTarget;
+            entityTarget = DefaultTarget;
+            postTileTarget = DefaultTarget;
+            screenTarget = DefaultTarget;
 
+            drawingTarget = DefaultTarget;
 
             random = new Random();
 
@@ -309,6 +303,17 @@ namespace ProjectMove
 
             base.Update(gameTime);
         }
+
+        public RenderTarget2D DefaultTarget {
+            get => new RenderTarget2D(GraphicsDevice, screenWidth, screenHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24); }
+
+        public RenderTarget2D mainTarget;
+        public RenderTarget2D tileTarget;
+        public RenderTarget2D entityTarget;
+        public RenderTarget2D postTileTarget;
+        public RenderTarget2D screenTarget;
+
+        public RenderTarget2D drawingTarget;
 
         public Color backgroundColor = Color.CornflowerBlue; ////new Color(33, 24, 27);
 
