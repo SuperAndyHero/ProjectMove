@@ -323,28 +323,28 @@ namespace ProjectMove
 
             GraphicsDevice.SetRenderTarget(tileTarget);//everything will now draw to the render target
             GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             mainWorld.DrawTiles(spriteBatch);
             spriteBatch.End();
 
 
             GraphicsDevice.SetRenderTarget(entityTarget);
             GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             mainWorld.DrawEntities(spriteBatch);
             spriteBatch.End();
 
 
             GraphicsDevice.SetRenderTarget(postTileTarget);
             GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             mainWorld.PostDrawTiles(spriteBatch);
             spriteBatch.End();
 
 
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(backgroundColor);//background color
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.Draw(tileTarget, Vector2.Zero, Color.White);
             spriteBatch.Draw(entityTarget, Vector2.Zero, Color.White);
             spriteBatch.Draw(postTileTarget, Vector2.Zero, Color.White);
@@ -353,7 +353,7 @@ namespace ProjectMove
             //UI
             GraphicsDevice.SetRenderTarget(screenTarget);
             GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             mainWorld.ExtraDraw(spriteBatch);
 
             DrawBuildUi(spriteBatch);
@@ -369,12 +369,12 @@ namespace ProjectMove
             zoomEffect.Parameters["Zoom"].SetValue(new Vector2(zoom));
             zoomEffect.Parameters["Offset"].SetValue(Vector2.Zero);//if this is used, ScreenToWorldCoords might be changed to account for this
             
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, effect: zoomEffect);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, effect: zoomEffect);
             spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             //UI
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.Draw(screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
         }

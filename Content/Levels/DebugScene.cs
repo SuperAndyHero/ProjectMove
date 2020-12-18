@@ -25,11 +25,11 @@ namespace ProjectMove.Content.Levels.LevelTypes
 
         //}
 
-        public override Point Size() => new Point(56, 56);
+        public override Point Size() => new Point(28, 28);
 
         public override void Worldgen(World world)
         {
-            ushort stoneWallType = GameID.GetWallID<StoneWall>();
+            ushort stoneWallType = GameID.GetWallID<BrickWall>();
             for (int i = 0; i < world.Size.X; i++)
             {
                 for (int j = 0; j < world.Size.Y; j++)
@@ -41,7 +41,7 @@ namespace ProjectMove.Content.Levels.LevelTypes
                 }
             }
 
-            world.FillLayer(GameID.GetFloorID<Dirt>(), (int)TileHandler.TileLayer.Floor);
+            world.FillLayer(GameID.GetFloorID<StoneFloor>(), (int)TileHandler.TileLayer.Floor);
         }
 
         public override void Setup(World world)

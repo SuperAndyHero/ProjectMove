@@ -34,6 +34,8 @@ namespace ProjectMove.Content.Tiles
         public static Texture2D[] ObjectTexture;
         public static Texture2D[] FloorTexture;
 
+        public static Texture2D Outline;
+
         public enum TileLayer
         {
             Object,
@@ -112,6 +114,7 @@ namespace ProjectMove.Content.Tiles
             WallBases.LoadWallTextures(ref WallTexture, ref WallBottomTexture, ref WallSideTexture);
             ObjectBases.LoadObjectTextures(ref ObjectTexture, tileTextureLocation);
             FloorBases.LoadObjectTextures(ref FloorTexture, tileTextureLocation);
+            Outline = LoadHandler.LoadTexture(tileTextureLocation + "Outline");
         }
     }
 
@@ -156,6 +159,8 @@ namespace ProjectMove.Content.Tiles
         public virtual bool HasEdges() => true;
         public virtual bool DrawSides(SpriteBatch spriteBatch, int i, int j) => HasEdges();
         public virtual bool DrawBottom(SpriteBatch spriteBatch, int i, int j) => HasEdges();
+        //public virtual bool DrawOutline(SpriteBatch spriteBatch, int i, int j) => true;
+        //public virtual Color OutlineColor() => Color.Black;
         public virtual string BottomTextureName() { return null; }
         public virtual string SideTextureName() { return null; }
 
@@ -209,7 +214,27 @@ namespace ProjectMove.Content.Tiles
                 Rectangle rect1 = Base.DrawRect();
                 Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize));
                 Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize);
-                spriteBatch.Draw(TileHandler.WallTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
+                spriteBatch.Draw(TileHandler.WallTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);            
+            }
+        }
+
+        //public void DrawOutline(SpriteBatch spriteBatch, int i, int j)
+        //{
+        //    if(Base.DrawOutline(spriteBatch, i, j))
+        //    {
+        //        Point drawPos = (Base.DrawRect().Location + new Point(i, j).MultBy(TileHandler.tileSize));
+        //        spriteBatch.Draw(TileHandler.Outline, drawPos.WorldToScreenCoords() - (Vector2.One * GameMain.spriteScaling), null, Base.OutlineColor(), default, default, GameMain.spriteScaling, default, default);
+        //    }
+        //}
+
+        public void DrawBottom(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (Base.DrawBottom(spriteBatch, i, j) && borderingEmpty)
+            {
+                Rectangle rect1 = Base.DrawRect();//gets the draw rect
+                Point drawPos = ((rect1.Location + new Point(0, rect1.Size.Y)) + (new Point(i, j).MultBy(TileHandler.tileSize)));
+                Point drawSize = new Point(rect1.Size.X, (int)(TileHandler.WallBottomTexture[type].Height * GameMain.spriteScaling));
+                spriteBatch.Draw(TileHandler.WallBottomTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), Color.White);
             }
         }
 
@@ -223,17 +248,6 @@ namespace ProjectMove.Content.Tiles
 
                 spriteBatch.Draw(TileHandler.WallSideTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(TileHandler.WallSideTexture[type].Width, 0), default, default);
                 spriteBatch.Draw(TileHandler.WallSideTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(-rect1.Size.X / 2, 0), SpriteEffects.FlipHorizontally, default);
-            }
-        }
-
-        public void DrawBottom(SpriteBatch spriteBatch, int i, int j)
-        {
-            if (Base.DrawBottom(spriteBatch, i, j) && borderingEmpty)
-            {
-                Rectangle rect1 = Base.DrawRect();//gets the draw rect
-                Point drawPos = ((rect1.Location + new Point(0, rect1.Size.Y)) + (new Point(i, j).MultBy(TileHandler.tileSize)));
-                Point drawSize = new Point(rect1.Size.X, (int)(TileHandler.WallBottomTexture[type].Height * GameMain.spriteScaling));
-                spriteBatch.Draw(TileHandler.WallBottomTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), Color.White);
             }
         }
 
