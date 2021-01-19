@@ -15,12 +15,12 @@ namespace ProjectMove.Content.Npcs.NpcTypes
             npc.displayName = "Dummy";
             npc.maxHealth = 1000;
             npc.damage = 0;
-            npc.size = new Vector2(20, 20);
+            npc.size = new Vector2(16, 16) * 4;
         }
 
-        public override bool TileInteract() => false;
-        public override bool NpcInteract() => false;
-        public override bool PlayerInteract() => false;
+        //public override bool TileInteract() => false;
+        //public override bool NpcInteract() => false;
+        //public override bool PlayerInteract() => false;
 
         public override void AI()
         {

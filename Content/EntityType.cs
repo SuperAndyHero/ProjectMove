@@ -10,6 +10,11 @@ using ProjectMove.Content.Npcs;
 
 namespace ProjectMove.Content
 {
+    //public abstract class Handler
+    //{
+    //    public virtual void LoadTextures() { }
+    //}
+
     public abstract class MainBase//used for Tiles, Npcs, projectiles, and particles
     {
         public virtual string TextureName() { return null; }
@@ -96,13 +101,13 @@ namespace ProjectMove.Content
                         FloorBase floorBase = currentWorld.floorLayer[currentTilePos.X, currentTilePos.Y].Base;
                         if (Collide(currentTilePos, floorBase.CollisionRect(), tileCollide ? floorBase.IsSolid() : false) && tileTrigger)
                         {
-                            //TODO
+                            //TODO TODO
                         }
 
                         WallBase wallBase = currentWorld.wallLayer[currentTilePos.X, currentTilePos.Y].Base;
                         if (Collide(currentTilePos, wallBase.CollisionRect(), tileCollide ? wallBase.IsSolid() : false) && tileTrigger)
                         {
-                            //TODO
+                            //TODO TODO
                         }
 
                         ObjectBase objectBase = currentWorld.objectLayer[currentTilePos.X, currentTilePos.Y].Base;

@@ -34,7 +34,7 @@ namespace ProjectMove.Content.Tiles
         public static Texture2D[] ObjectTexture;
         public static Texture2D[] FloorTexture;
 
-        public static Texture2D Outline;
+        //public static Texture2D Outline;
 
         public enum TileLayer
         {
@@ -57,7 +57,7 @@ namespace ProjectMove.Content.Tiles
             };
         }
 
-        public static ushort GetAirTile(int layer)
+        public static int GetAirTile(int layer)
         {
             return layer switch
             {
@@ -72,10 +72,6 @@ namespace ProjectMove.Content.Tiles
             WallBases = new List<WallBase>();
             ObjectBases = new List<ObjectBase>();
             FloorBases = new List<FloorBase>();
-
-            WallID = new Dictionary<Type, ushort>();
-            ObjectID = new Dictionary<Type, ushort>();
-            FloorID = new Dictionary<Type, ushort>();
 
             //tiles can be at any location, but the textures must be in tiles/textures
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
@@ -114,7 +110,7 @@ namespace ProjectMove.Content.Tiles
             WallBases.LoadWallTextures(ref WallTexture, ref WallBottomTexture, ref WallSideTexture);
             ObjectBases.LoadObjectTextures(ref ObjectTexture, tileTextureLocation);
             FloorBases.LoadObjectTextures(ref FloorTexture, tileTextureLocation);
-            Outline = LoadHandler.LoadTexture(tileTextureLocation + "Outline");
+            //Outline = LoadHandler.LoadTexture(tileTextureLocation + "Outline");
         }
     }
 
@@ -178,9 +174,9 @@ namespace ProjectMove.Content.Tiles
 
     public struct ObjectTile
     {
-        public ObjectTile(ushort tileType = 0) { type = tileType; }
+        public ObjectTile(int tileType = 0) => type = tileType;
         public ObjectBase Base { get => TileHandler.ObjectBases[type]; }
-        public ushort type;
+        public int type;
         public void Draw(SpriteBatch spriteBatch, int i, int j)
         {
             if (Base.Draw(spriteBatch, i, j))//if this tile should be drawn
@@ -197,13 +193,13 @@ namespace ProjectMove.Content.Tiles
 
     public struct WallTile
     {
-        public WallTile(ushort tileType = 0) 
+        public WallTile(int tileType = 0) 
         { 
             type = tileType;
             borderingEmpty = true;
         }
         public WallBase Base { get => TileHandler.WallBases[type]; }
-        public ushort type;
+        public int type;
 
         private bool borderingEmpty;
 
@@ -257,9 +253,9 @@ namespace ProjectMove.Content.Tiles
 
     public struct FloorTile
     {
-        public FloorTile(ushort tileType = 0) { type = tileType; }
+        public FloorTile(int tileType = 0) { type = tileType; }
         public FloorBase Base { get => TileHandler.FloorBases[type]; }
-        public ushort type;
+        public int type;
         public void Draw(SpriteBatch spriteBatch, int i, int j)
         {
             if (Base.Draw(spriteBatch, i, j))//if this tile should be drawn

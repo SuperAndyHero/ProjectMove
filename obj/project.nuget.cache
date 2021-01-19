@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "i705XtRb5TgS3xhUw+dYInmrwB84z896Kf5op5ofGpwHhKCi1nIXnRsKiYfzuLJTZB6HRUL6JhuTdIhGwLaFEA==",
+  "dgSpecHash": "gbA5S1yHpBYqf+sJKcsqw5Puro7tVkCUwPxDY01bQwf+m9y8pJbqvlqAe2EGoqzUdTplSR/4v9Gsq7Kkz7Xg5Q==",
   "success": true,
   "projectFilePath": "D:\\Documents\\ProjectMove\\ProjectMove.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\crowly\\.nuget\\packages\\monogame.content.builder.task\\3.8.0.1641\\monogame.content.builder.task.3.8.0.1641.nupkg.sha512",
-    "C:\\Users\\crowly\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512"
+    "C:\\Users\\crowly\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\crowly\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\crowly\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512"
   ],
   "logs": []
 }

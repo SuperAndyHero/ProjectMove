@@ -17,6 +17,8 @@ using static ProjectMove.GameID;
 using ProjectMove.Content.Tiles.TileTypes.Objects;
 using ProjectMove.Content.Tiles.TileTypes.Floors;
 using System.Diagnostics;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Xml.Linq;
 
 namespace ProjectMove
 {
@@ -42,9 +44,9 @@ namespace ProjectMove
         public static float zoom = 1f;
         public Effect zoomEffect;
 
-        public static ushort selectedFloorTile;
-        public static ushort selectedWallTile;
-        public static ushort selectedObjectTile;
+        public static int selectedFloorTile;
+        public static int selectedWallTile;
+        public static int selectedObjectTile;
 
         public static byte buildModeLayer = (byte)TileHandler.TileLayer.Wall;
         public static bool buildMode = false;
@@ -76,7 +78,7 @@ namespace ProjectMove
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            Instance = this;
+            Instance = this;//this is how
         }
 
         #region loading
@@ -107,13 +109,14 @@ namespace ProjectMove
 
             mousePos = new Point();
 
+            GameID.Initialize();
+
             NpcHandler.Initialize();
             LevelHandler.Initialize();
             TileHandler.Initialize();
 
             base.Initialize();
         }
-
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -126,6 +129,8 @@ namespace ProjectMove
             #region textures, fonts, and shaders
             font_Arial = Content.Load<SpriteFont>("Arial");
             font_Arial_Bold = Content.Load<SpriteFont>("Arial_Bold");
+
+
 
             zoomEffect = Content.Load<Effect>("Effects/Zoom");
 
@@ -181,7 +186,7 @@ namespace ProjectMove
             }
         }
 
-        private ref ushort GetSelectedTile(int layer)
+        private ref int GetSelectedTile(int layer)
         {
             switch (layer)
             {
@@ -264,7 +269,7 @@ namespace ProjectMove
 
                 if (ScrollValue > oldScrollValue || ButtonJustPressed(Keys.Left))
                 {
-                    ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
+                    ref int selectedTile = ref GetSelectedTile(buildModeLayer);
                     if (selectedTile <= 0)
                         selectedTile = (ushort)TileHandler.TypeCount(buildModeLayer);
                     else
@@ -272,7 +277,7 @@ namespace ProjectMove
                 }
                 else if (ScrollValue < oldScrollValue || ButtonJustPressed(Keys.Right))
                 {
-                    ref ushort selectedTile = ref GetSelectedTile(buildModeLayer);
+                    ref int selectedTile = ref GetSelectedTile(buildModeLayer);
                     if (selectedTile >= TileHandler.TypeCount(buildModeLayer))
                         selectedTile = 0;
                     else

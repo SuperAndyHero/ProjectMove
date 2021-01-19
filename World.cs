@@ -94,9 +94,9 @@ namespace ProjectMove
                 for (int i = 0; i < Size.X; i++) {
                     wallLayer[i, j].DrawBottom(spriteBatch, i, j); } }
 
-            for (int i = 0; i < Size.X; i++) {
-                for (int j = 0; j < Size.Y; j++) {
-                    wallLayer[i, j].DrawOutline(spriteBatch, i, j); } }
+            //for (int i = 0; i < Size.X; i++) {
+            //    for (int j = 0; j < Size.Y; j++) {
+            //        wallLayer[i, j].DrawOutline(spriteBatch, i, j); } }
 
             for (int j = 0; j < Size.Y; j++) {
                 for (int i = 0; i < Size.X; i++) {
@@ -136,7 +136,7 @@ namespace ProjectMove
         }
 
 
-        public Npc SpawnNpc(ushort type, Vector2 position, Vector2 velocity)
+        public Npc SpawnNpc(int type, Vector2 position, Vector2 velocity)
         {
             if (npcs.Count <= NpcHandler.MaxNpcs)
             {
@@ -184,7 +184,7 @@ namespace ProjectMove
             }
         }
 
-        public void FillLayer(ushort type, int layer)
+        public void FillLayer(int type, int layer)
         {
             for (int i = 0; i < Size.X; i++)
             {
@@ -195,17 +195,17 @@ namespace ProjectMove
             }
         }
 
-        public void PlaceTile(ushort type, Vector2 position, int layer)
+        public void PlaceTile(int type, Vector2 position, int layer)
         {
             PlaceTile(type, (int)position.X, (int)position.Y, layer);
         }
 
-        public void PlaceTile(ushort type, Point position, int layer)
+        public void PlaceTile(int type, Point position, int layer)
         {
             PlaceTile(type, position.X, position.Y, layer);
         }
 
-        public void PlaceTile(ushort type, int posX, int posY, int layer)
+        public void PlaceTile(int type, int posX, int posY, int layer)
         {
             if (IsTileInWorld(posX, posY))
             {

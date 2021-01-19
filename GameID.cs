@@ -14,44 +14,57 @@ using System.Reflection;
 using ProjectMove.Content.Tiles.TileTypes;
 using System.Linq;
 using ProjectMove.Content.Levels;
+using ProjectMove.Content.Projectiles;
 
 namespace ProjectMove
 {
     public static class GameID
     {
-        public static Dictionary<Type, ushort> WallID;//initalized in TileHandler; the same place this is set
-        public static Dictionary<Type, ushort> ObjectID;//these could be one list, but are not for performance sake
-        public static Dictionary<Type, ushort> FloorID;
-
+        public static Dictionary<Type, int> WallID;//initalized in TileHandler; the same place this is set
+        public static Dictionary<Type, int> ObjectID;//these could be one list, but are not for performance sake
+        public static Dictionary<Type, int> FloorID;
         //public static Dictionary<Type, ushort> LevelID;
+        public static Dictionary<Type, int> NpcID;
+        public static Dictionary<Type, int> ProjectileID;
 
-        public static Dictionary<Type, ushort> NpcID;
+        public static void Initialize()
+        {
+            WallID = new Dictionary<Type, int>();
+            ObjectID = new Dictionary<Type, int>();
+            FloorID = new Dictionary<Type, int>();
 
+            NpcID = new Dictionary<Type, int>();
+            ProjectileID = new Dictionary<Type, int>();
+        }
 
-
-        public static ushort GetWallID<T>() where T : WallBase
+        public static int GetWallID<T>() where T : WallBase
         {
             return WallID[typeof(T)];
         }
 
-        public static ushort GetObjectID<T>() where T : ObjectBase
+        public static int GetObjectID<T>() where T : ObjectBase
         {
             return ObjectID[typeof(T)];
         }
 
-        public static ushort GetFloorID<T>() where T : FloorBase
+        public static int GetFloorID<T>() where T : FloorBase
         {
             return FloorID[typeof(T)];
         }
 
-        //public static ushort GetLevelID<T>() where T : LevelBase
+        //public static int GetLevelID<T>() where T : LevelBase
         //{
         //    return LevelID[typeof(T)];
         //}
 
-        public static ushort GetNpcID<T>() where T : NpcBase
+        public static int GetNpcID<T>() where T : NpcBase
         {
             return NpcID[typeof(T)];
+        }
+
+        public static int GetProjectileID<T>() where T : ProjectileBase
+        {
+            return ProjectileID[typeof(T)];
         }
     }
 }

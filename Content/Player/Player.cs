@@ -15,7 +15,7 @@ namespace ProjectMove.Content.Player
         #region const stats
 
         public const int Default_Width = 16;
-        public const int Default_Height = 24;
+        public const int Default_Height = 32;
 
         public const float Default_MaxSpeed = 3.5f;
         public const float Default_Acceleration = 0.09f;

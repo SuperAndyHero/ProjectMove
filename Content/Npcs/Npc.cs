@@ -27,8 +27,6 @@ namespace ProjectMove.Content.Npcs
         {
             BaseTypes = new List<Type>();
 
-            NpcID = new Dictionary<Type, ushort>();
-
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
                       .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(NpcBase)) && t.Namespace == "ProjectMove.Content.Npcs.NpcTypes")
                       .ToList();
@@ -70,7 +68,7 @@ namespace ProjectMove.Content.Npcs
     {
         public NpcBase npcBase;
 
-        public ushort type;//the type, set when this is spawned    (this could be changed to a readonly by adding a ctor to this class, minor change)
+        public int type;//the type, set when this is spawned    (this could be changed to a readonly by adding a ctor to this class, minor change)
 
         public int damage = 0;//the amount of damage this npc does //unused
 
@@ -136,10 +134,10 @@ namespace ProjectMove.Content.Npcs
                 {
                     if (npcBase.OnNpcCollide(curNpc))
                     {
-                        Vector2 difference = Vector2.Normalize((Rect.Center - curNpc.Rect.Center).ToVector2());
+                        Vector2 direction = Vector2.Normalize((Rect.Center - curNpc.Rect.Center).ToVector2());
                         //Vector2 difference = (Rect.Center - a.Rect.Center).ToVector2() / 16;//performance difference negligible
-                        position += difference / ((Rect.Width + Rect.Height) / 32);
-                        curNpc.position -= difference;
+                        position += direction;
+                        curNpc.position -= direction;
                     }
                 }
             }
@@ -154,11 +152,11 @@ namespace ProjectMove.Content.Npcs
                 else if (damage < 0)
                     currentWorld.player.Heal(damage);
 
-                if (npcBase.OnPlayerCollide(currentWorld.player) && Rect.Center != currentWorld.player.Rect.Center)
+                if (npcBase.OnPlayerCollide(currentWorld.player) && Rect.Center - currentWorld.player.Rect.Center != Point.Zero)
                 {
-                    Vector2 difference = Vector2.Normalize((Rect.Center - currentWorld.player.Rect.Center).ToVector2());
-                    position += difference / ((Rect.Width + Rect.Height) / 32);
-                    currentWorld.player.position -= difference;
+                    Vector2 direction = Vector2.Normalize((Rect.Center - currentWorld.player.Rect.Center).ToVector2());
+                    position += direction;
+                    currentWorld.player.position -= direction;
                 }
             }
         }

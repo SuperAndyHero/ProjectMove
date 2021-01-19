@@ -17,7 +17,7 @@ namespace ProjectMove.Content.Npcs.NpcTypes
             npc.displayName = "Dasher";
             npc.maxHealth = 400;
             npc.damage = 10;
-            npc.size = new Vector2(32, 32);
+            npc.size = new Vector2(16, 16);
         }
 
         public override void AI()

@@ -29,7 +29,7 @@ namespace ProjectMove.Content.Levels.LevelTypes
 
         public override void Worldgen(World world)
         {
-            ushort stoneWallType = GameID.GetWallID<BrickWall>();
+            int stoneWallType = GameID.GetWallID<BrickWall>();
             for (int i = 0; i < world.Size.X; i++)
             {
                 for (int j = 0; j < world.Size.Y; j++)
@@ -49,10 +49,10 @@ namespace ProjectMove.Content.Levels.LevelTypes
             world.player.position = Size().TileToWorldCoords().ToVector2() / 2;
             //world.SpawnNpc(GameID.GetNpcID<Dasher>(), world.player.position + (Vector2.One * 120), Vector2.Zero);
             world.SpawnNpc(GameID.GetNpcID<Dummy>(), world.player.position + (Vector2.One * 100), Vector2.Zero);
-            //for (int i = 0; i < 50; i++)
-            //{
-            //    world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position - (Vector2.One * 100) + (Vector2.One * i), Vector2.Zero);
-            //}
+            for (int i = 0; i < 1; i++)
+            {
+                world.SpawnNpc(GameID.GetNpcID<Seeker>(), world.player.position - (Vector2.One * 100) + (Vector2.One * i * 10), Vector2.Zero);
+            }
         }
     }
 }
