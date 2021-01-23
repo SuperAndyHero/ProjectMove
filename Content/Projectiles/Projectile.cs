@@ -14,7 +14,6 @@ using static ProjectMove.GameID;
 namespace ProjectMove.Content.Projectiles
 {
     #region npc handler
-    //TODO: make not static
     public static class ProjectileHandler
     {
         public const int MaxProjectiles = 1200;
@@ -122,27 +121,11 @@ namespace ProjectMove.Content.Projectiles
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //Vector2 spriteOffset = GameMain.debugTexture.Size() / 2;
-
-            //sprite
             if (projectileBase.Draw(spriteBatch))
                 spriteBatch.Draw(ProjectileHandler.ProjectileTexture[type], Center.WorldToScreenCoords(), null, Color.White, default, ProjectileHandler.ProjectileTexture[type].Size() / 2, spriteScale * GameMain.spriteScaling, default, default);
-
-            //debug
+            
             if (GameMain.debug)
                 spriteBatch.Draw(GameMain.debugTexture, Rect.WorldToScreenCoords(), Color.Blue); //hitbox
-
-            //health
-            //string healthStr = health.ToString();
-            //Vector2 textSize = GameMain.font_Arial_Bold.MeasureString(healthStr);
-            //spriteBatch.DrawString(GameMain.font_Arial_Bold, healthStr, Rect.Center.WorldToScreenCoords(), Color.White, default, new Vector2(textSize.X / 2, textSize.Y + size.Y / 2), 1, default, default);
-
-            //position drawn in center of screen
-            //spriteBatch.DrawString(GameMain.font_Arial, position.ToString(), GameMain.ScreenSize.Center(), Color.LightGoldenrodYellow, default, Vector2.Zero, 1, default, default);
-
-            //name text (moved to cursor)
-            //Vector2 textSize2 = GameMain.font_Arial.MeasureString(displayName);
-            //spriteBatch.DrawString(GameMain.font_Arial, displayName, Rect.Center.ToScreenCoords(), Color.LightGoldenrodYellow, default, new Vector2(textSize2.X / 2, -textSize2.Y + size.Y / 2), 1, default, default);
         }
     }
     #endregion

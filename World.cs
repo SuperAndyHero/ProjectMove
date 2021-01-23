@@ -65,7 +65,6 @@ namespace ProjectMove
             GenerateWorld();
         }
 
-
         public void Update()
         {
             level.Update();
@@ -81,37 +80,33 @@ namespace ProjectMove
                 GameMain.cameraPosition = (player.position.ToPoint() - GameMain.ScreenSize.Half())/*.MultBy(GameMain.zoom)*/;
         }
 
-
         public void DrawTiles(SpriteBatch spriteBatch)
         {
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {
-                    floorLayer[i, j].Draw(spriteBatch, i, j); } }
+                    floorLayer[i, j].Base.DrawTile(spriteBatch, i, j); } }
 
             for (int j = 0; j < Size.Y; j++) {
                 for (int i = 0; i < Size.X; i++) {
-                    wallLayer[i, j].DrawSides(spriteBatch, i, j); } 
+                    wallLayer[i, j].Base.DrawTileSides(spriteBatch, i, j); } 
                 for (int i = 0; i < Size.X; i++) {
-                    wallLayer[i, j].DrawBottom(spriteBatch, i, j); } }
+                    wallLayer[i, j].Base.DrawTileBottom(spriteBatch, i, j); } }
 
             //for (int i = 0; i < Size.X; i++) {
             //    for (int j = 0; j < Size.Y; j++) {
-            //        wallLayer[i, j].DrawOutline(spriteBatch, i, j); } }
+            //        wallLayer[i, j].Base.DrawTileOutline(spriteBatch, i, j); } }
 
             for (int j = 0; j < Size.Y; j++) {
                 for (int i = 0; i < Size.X; i++) {
-                    wallLayer[i, j].Draw(spriteBatch, i, j); } 
+                    wallLayer[i, j].Base.DrawTile(spriteBatch, i, j); } 
                 for (int i = 0; i < Size.X; i++) {
-                    objectLayer[i, j].Draw(spriteBatch, i, j); } } //these are both drawn on the same "layer" so lower walls draw over higher objects
+                    objectLayer[i, j].Base.DrawTile(spriteBatch, i, j); } } //these are both drawn on the same "layer" so lower walls draw over higher objects
         }
 
         public void DrawEntities(SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < npcs.Count; i++)//updating every npc instance in the main npc list
-            {
-                npcs[i].Draw(spriteBatch);
-            }
-
+            foreach (Npc npc in npcs)//updating every npc instance in the main npc list
+                npc.Draw(spriteBatch);
             player.Draw(spriteBatch);
         }
 
@@ -119,21 +114,22 @@ namespace ProjectMove
         {
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {
-                    floorLayer[i, j].PostDraw(spriteBatch, i, j); } }
+                    floorLayer[i, j].Base.PostDraw(spriteBatch, i, j); } }
 
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {
-                    wallLayer[i, j].PostDraw(spriteBatch, i, j); } }
+                    wallLayer[i, j].Base.PostDraw(spriteBatch, i, j); } }
 
             for (int i = 0; i < Size.X; i++) {
                 for (int j = 0; j < Size.Y; j++) {
-                    objectLayer[i, j].PostDraw(spriteBatch, i, j); } }
+                    objectLayer[i, j].Base.PostDraw(spriteBatch, i, j); } }
         }
 
         public void ExtraDraw(SpriteBatch spriteBatch)
         {
             level.Draw(spriteBatch);//after for special vfx, may split this into multiple methods as needed
         }
+
 
 
         public Npc SpawnNpc(int type, Vector2 position, Vector2 velocity)

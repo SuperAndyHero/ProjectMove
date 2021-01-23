@@ -17,10 +17,6 @@ namespace ProjectMove
 {
     public static class LoadHandler
     {
-
-        //https://discord.com/channels/103110554649894912/271236615823687680/788422550253469736
-        //^ for single texture loads
-
         public static Texture2D LoadTexture(string location)
         {
             try

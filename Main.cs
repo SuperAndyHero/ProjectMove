@@ -19,6 +19,7 @@ using ProjectMove.Content.Tiles.TileTypes.Floors;
 using System.Diagnostics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Xml.Linq;
+using ProjectMove.Content;
 
 namespace ProjectMove
 {
@@ -108,6 +109,8 @@ namespace ProjectMove
             cameraPosition = Point.Zero;
 
             mousePos = new Point();
+
+            TextureHandler.Initialize();
 
             GameID.Initialize();
 
@@ -404,9 +407,9 @@ namespace ProjectMove
             {
                 Vector2 pos = mousePos.ToVector2() + new Vector2(mouseTexture.Width, BuildUiPreview.Height  * 2.1f);
                 spriteBatch.Draw(BuildUiPreview, pos, null, Color.White, default, BuildUiPreview.Size().Half(), uiScaling, default, default);
-                Texture2D tileTexture = buildModeLayer == (byte)TileHandler.TileLayer.Floor ? TileHandler.FloorTexture[selectedFloorTile] : 
-                                        buildModeLayer == (byte)TileHandler.TileLayer.Wall ? TileHandler.WallTexture[selectedWallTile] : 
-                                                                                            TileHandler.ObjectTexture[selectedObjectTile];
+                Texture2D tileTexture = buildModeLayer == (byte)TileHandler.TileLayer.Floor ? TextureHandler.GetTexture(TileHandler.FloorBases[selectedFloorTile].texture) : 
+                                        buildModeLayer == (byte)TileHandler.TileLayer.Wall ? TextureHandler.GetTexture(TileHandler.WallBases[selectedWallTile].texture) :
+                                                                                            TextureHandler.GetTexture(TileHandler.ObjectBases[selectedObjectTile].texture);
                 spriteBatch.Draw(tileTexture, pos, null, Color.White, default, tileTexture.Size().Half(), uiScaling, default, default);
 
                 string tileName = buildModeLayer == (byte)TileHandler.TileLayer.Floor ? TileHandler.FloorBases[selectedFloorTile].GetType().Name :

@@ -19,7 +19,7 @@ namespace ProjectMove.Content.Npcs
     public static class NpcHandler//the stuff that could be in Npc or Main, but isnt for the sake of being clean
     {
         public const int MaxNpcs = 200;
-        public static List<Type> BaseTypes;
+        public static List<Type> BaseTypes;//? is this even needed?
 
         public static Texture2D[] NpcTexture;
 
@@ -87,7 +87,7 @@ namespace ProjectMove.Content.Npcs
             currentWorld = world;
 
             if (npcBase == null)//if no npc base, gets the npc base of this type
-                npcBase = (NpcBase)Activator.CreateInstance(NpcHandler.BaseTypes[type]);
+                npcBase = (NpcBase)Activator.CreateInstance(NpcHandler.BaseTypes[type]);//Todo pass T in ctor instead of Type => Int => Type
 
             npcBase.npc = this;//sets the npc instance on the npc base side
             npcBase.Setup();//setup methods on the npc base

@@ -16,6 +16,6 @@ namespace ProjectMove.Content.Tiles.TileTypes.Walls
     public class StoneWall : WallBase
     {
         public override string TextureName() => "Stone";
-        public override bool DrawSides(SpriteBatch spriteBatch, int i, int j) => false;
+        public override bool HasSides() => false;
     }
 }

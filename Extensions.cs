@@ -28,32 +28,32 @@ namespace ProjectMove
             }
         }
 
-        public static void LoadWallTextures<T>(this List<T> list, ref Texture2D[] texArray, ref Texture2D[] texBottomArray, ref Texture2D[] texSideArray) where T : WallBase
-        {
-            texArray = new Texture2D[list.Count];
-            texBottomArray = new Texture2D[list.Count];
-            texSideArray = new Texture2D[list.Count];
-            for (int i = 0; i < list.Count; i++)
-            {
-                string directory = list[i].TexturePath() ?? TileHandler.tileTextureLocation;
+        //public static void LoadWallTextures<T>(this List<T> list, ref Texture2D[] texArray, ref Texture2D[] texBottomArray, ref Texture2D[] texSideArray) where T : WallBase
+        //{
+        //    texArray = new Texture2D[list.Count];
+        //    texBottomArray = new Texture2D[list.Count];
+        //    texSideArray = new Texture2D[list.Count];
+        //    for (int i = 0; i < list.Count; i++)
+        //    {
+        //        string directory = list[i].TexturePath() ?? TileHandler.tileTextureLocation;
 
-                string location = directory + (list[i].TextureName() ?? list[i].GetType().Name);
-                texArray[i] = LoadTexture(location);
+        //        string location = directory + (list[i].TextureName() ?? list[i].GetType().Name);
+        //        texArray[i] = LoadTexture(location);
 
-                if (list[i].HasEdges()) {
-                    string locationBottom = directory + ((list[i].BottomTextureName() ?? list[i].TextureName() ?? list[i].GetType().Name) + "_Bottom");
-                    texBottomArray[i] = LoadTexture(locationBottom);
+        //        if (list[i].HasSides()) {
+        //            string locationBottom = directory + ((list[i].BottomTextureName() ?? list[i].TextureName() ?? list[i].GetType().Name) + "_Bottom");
+        //            texBottomArray[i] = LoadTexture(locationBottom);
 
-                    string locationSide = directory + ((list[i].SideTextureName() ?? list[i].TextureName() ?? list[i].GetType().Name) + "_Side");
-                    texSideArray[i] = LoadTexture(locationSide);
-                }
-                else {
-                    Texture2D blank = texBottomArray[i] = GameMain.Instance.Content.Load<Texture2D>("Blank");
-                    texBottomArray[i] = blank;
-                    texSideArray[i] = blank; 
-                }
-            }
-        }
+        //            string locationSide = directory + ((list[i].SideTextureName() ?? list[i].TextureName() ?? list[i].GetType().Name) + "_Side");
+        //            texSideArray[i] = LoadTexture(locationSide);
+        //        }
+        //        else {
+        //            Texture2D blank = texBottomArray[i] = GameMain.Instance.Content.Load<Texture2D>("Blank");
+        //            texBottomArray[i] = blank;
+        //            texSideArray[i] = blank; 
+        //        }
+        //    }
+        //}
 
         public static void LoadObjectTextures(this List<Type> list, ref Texture2D[] texArray, string directory)
         {

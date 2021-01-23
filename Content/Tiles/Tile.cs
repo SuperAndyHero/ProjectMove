@@ -27,12 +27,12 @@ namespace ProjectMove.Content.Tiles
         public static List<ObjectBase> ObjectBases;
         public static List<FloorBase> FloorBases;
 
-        public static Texture2D[] WallTexture;
-        public static Texture2D[] WallSideTexture;
-        public static Texture2D[] WallBottomTexture;
+        //public static Texture2D[] WallTexture;
+        //public static Texture2D[] WallSideTexture;
+        //public static Texture2D[] WallBottomTexture;
 
-        public static Texture2D[] ObjectTexture;
-        public static Texture2D[] FloorTexture;
+        //public static Texture2D[] ObjectTexture;
+        //public static Texture2D[] FloorTexture;
 
         //public static Texture2D Outline;
 
@@ -74,6 +74,7 @@ namespace ProjectMove.Content.Tiles
             FloorBases = new List<FloorBase>();
 
             //tiles can be at any location, but the textures must be in tiles/textures
+            //move all reflection to load handler
             List<Type> TypeList = Assembly.GetExecutingAssembly().GetTypes()
                       .Where(t => t.IsClass && !t.IsAbstract && t.Namespace.Contains("ProjectMove.Content.Tiles.TileTypes"))
                       .ToList();
@@ -107,166 +108,147 @@ namespace ProjectMove.Content.Tiles
 
         public static void LoadTileTextures()
         {
-            WallBases.LoadWallTextures(ref WallTexture, ref WallBottomTexture, ref WallSideTexture);
-            ObjectBases.LoadObjectTextures(ref ObjectTexture, tileTextureLocation);
-            FloorBases.LoadObjectTextures(ref FloorTexture, tileTextureLocation);
-            //Outline = LoadHandler.LoadTexture(tileTextureLocation + "Outline");
+            foreach (WallBase wallBase in WallBases)
+                wallBase.Load();
+            foreach (ObjectBase objectBase in ObjectBases)
+                objectBase.Load();
+            foreach (FloorBase floorBase in FloorBases)
+                floorBase.Load();
         }
     }
 
-
+    #region bases
     public abstract class TileBase : MainBase
     {
+        public string texture;
+        public TileBase() => texture = TexturePath() ?? TileHandler.tileTextureLocation + (TextureName() ?? GetType().Name);
+        public Rectangle DefaultRect => new Rectangle(Point.Zero, new Point(TileHandler.tileSize));
+        public void DrawTile(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (Draw(spriteBatch, i, j))//if this tile should be drawn
+            {
+                Rectangle rect1 = DrawRect();
+                Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize));
+                Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize);
+                spriteBatch.Draw(TextureHandler.GetTexture(texture), drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
+            }
+        }
+
+
         public virtual bool IsSolid() => true;
-
         public virtual bool Draw(SpriteBatch spriteBatch, int i, int j) { return true; }
-
         public virtual void PostDraw(SpriteBatch spriteBatch, int i, int j) { }
-
         /// <summary>
         /// rect position is relative to tile position
         /// </summary>
         /// <returns></returns>
         /// 
         public virtual Rectangle[] CollisionRect() { return new Rectangle[1] { DefaultRect }; }
-
-        /// <summary>
-        /// Only used when Draw() returns true
-        /// </summary>
-        /// <returns></returns>
-        public virtual Rectangle DrawRect() { return DefaultRect; }
-
-        /// <summary>
-        /// Name of the texture to load, uses class name if null
-        /// </summary>
-        /// <returns></returns>
-
-        public Rectangle DefaultRect { get => new Rectangle(Point.Zero, new Point(TileHandler.tileSize)); }
+        public virtual Rectangle DrawRect() => DefaultRect;
+        public virtual void Load() => TextureHandler.LoadTexture(texture);
     }
 
-
-
+    #region tile bases
     public abstract class WallBase : TileBase
     {
-        /// <summary>
-        /// if this base should load the side textures
-        /// </summary>
-        /// <returns></returns>
-        public virtual bool HasEdges() => true;
-        public virtual bool DrawSides(SpriteBatch spriteBatch, int i, int j) => HasEdges();
-        public virtual bool DrawBottom(SpriteBatch spriteBatch, int i, int j) => HasEdges();
+        public string sideTexture;
+        public string bottomTexture;
+        public WallBase() : base()
+        {
+            string path = TexturePath() ?? TileHandler.tileTextureLocation;
+            sideTexture = path + (SideTextureName() ?? TextureName() ?? GetType().Name) + "_Side";
+            bottomTexture = path + (SideTextureName() ?? TextureName() ?? GetType().Name) + "_Bottom";
+        }
+        public void DrawTileBottom(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (DrawBottom(spriteBatch, i, j))
+            {
+                Rectangle rect1 = DrawRect();//gets the draw rect
+                Texture2D texture = TextureHandler.GetTexture(bottomTexture);
+                Point drawPos = ((rect1.Location + new Point(0, rect1.Size.Y)) + (new Point(i, j).MultBy(TileHandler.tileSize)));
+                Point drawSize = new Point(rect1.Size.X, (int)(texture.Height * GameMain.spriteScaling));
+                spriteBatch.Draw(texture, new Rectangle(drawPos, drawSize).WorldToScreenCoords(), Color.White);
+            }
+        }
+        public void DrawTileSides(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (DrawSides(spriteBatch, i, j))
+            {
+                Rectangle rect1 = DrawRect();//gets the draw rect
+                Texture2D texture = TextureHandler.GetTexture(sideTexture);
+                Point drawPos = (rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize));
+                Point drawSize = (texture.Size() * GameMain.spriteScaling).ToPoint();
+
+                spriteBatch.Draw(texture, new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(texture.Width, 0), default, default);
+                spriteBatch.Draw(texture, new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(-rect1.Size.X / 2, 0), SpriteEffects.FlipHorizontally, default);
+            }
+        }
+
+
+        public virtual bool HasSides() => true;
+        public virtual bool HasBottom() => true;
+        public virtual string SideTextureName() { return null; }
+        public virtual string BottomTextureName() { return null; }
+        public virtual bool DrawSides(SpriteBatch spriteBatch, int i, int j) => HasSides();
+        public virtual bool DrawBottom(SpriteBatch spriteBatch, int i, int j) => HasBottom();
+        public virtual new void Load()
+        {
+            if (HasSides())
+                TextureHandler.LoadTexture(sideTexture);
+            if (HasBottom())
+                TextureHandler.LoadTexture(bottomTexture);
+            base.Load();
+        }
+
         //public virtual bool DrawOutline(SpriteBatch spriteBatch, int i, int j) => true;
         //public virtual Color OutlineColor() => Color.Black;
-        public virtual string BottomTextureName() { return null; }
-        public virtual string SideTextureName() { return null; }
-
+        /*public void DrawOutline(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (Base.DrawOutline(spriteBatch, i, j))
+            {
+                Point drawPos = (Base.DrawRect().Location + new Point(i, j).MultBy(TileHandler.tileSize));
+                spriteBatch.Draw(TileHandler.Outline, drawPos.WorldToScreenCoords() - (Vector2.One * GameMain.spriteScaling), null, Base.OutlineColor(), default, default, GameMain.spriteScaling, default, default);
+            }
+        }*/
     }
 
     public abstract class ObjectBase : TileBase
     {
+
     }
 
     public abstract class FloorBase : TileBase
     {
         public virtual new bool IsSolid() => false;
     }
+    #endregion
+    #endregion
 
-
+    #region tile objects
     public struct ObjectTile
     {
+        public int type;
         public ObjectTile(int tileType = 0) => type = tileType;
         public ObjectBase Base { get => TileHandler.ObjectBases[type]; }
-        public int type;
-        public void Draw(SpriteBatch spriteBatch, int i, int j)
-        {
-            if (Base.Draw(spriteBatch, i, j))//if this tile should be drawn
-            {
-                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
-                Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize));
-                Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize);
-                spriteBatch.Draw(TileHandler.ObjectTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);
-            }
-        }
-        public void PostDraw(SpriteBatch spriteBatch, int i, int j) =>
-            Base.PostDraw(spriteBatch, i, j);
     }
 
     public struct WallTile
     {
+        public int type;
+        private bool borderingEmpty;
         public WallTile(int tileType = 0) 
         { 
             type = tileType;
             borderingEmpty = true;
         }
         public WallBase Base { get => TileHandler.WallBases[type]; }
-        public int type;
-
-        private bool borderingEmpty;
-
-        public void Draw(SpriteBatch spriteBatch, int i, int j)
-        {
-            if (Base.Draw(spriteBatch, i, j))//if this tile should be drawn
-            {
-                Rectangle rect1 = Base.DrawRect();
-                Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize));
-                Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize);
-                spriteBatch.Draw(TileHandler.WallTexture[type], drawPos.WorldToScreenCoords(), null, Color.White, default, default, drawSize * GameMain.spriteScaling, default, default);            
-            }
-        }
-
-        //public void DrawOutline(SpriteBatch spriteBatch, int i, int j)
-        //{
-        //    if(Base.DrawOutline(spriteBatch, i, j))
-        //    {
-        //        Point drawPos = (Base.DrawRect().Location + new Point(i, j).MultBy(TileHandler.tileSize));
-        //        spriteBatch.Draw(TileHandler.Outline, drawPos.WorldToScreenCoords() - (Vector2.One * GameMain.spriteScaling), null, Base.OutlineColor(), default, default, GameMain.spriteScaling, default, default);
-        //    }
-        //}
-
-        public void DrawBottom(SpriteBatch spriteBatch, int i, int j)
-        {
-            if (Base.DrawBottom(spriteBatch, i, j) && borderingEmpty)
-            {
-                Rectangle rect1 = Base.DrawRect();//gets the draw rect
-                Point drawPos = ((rect1.Location + new Point(0, rect1.Size.Y)) + (new Point(i, j).MultBy(TileHandler.tileSize)));
-                Point drawSize = new Point(rect1.Size.X, (int)(TileHandler.WallBottomTexture[type].Height * GameMain.spriteScaling));
-                spriteBatch.Draw(TileHandler.WallBottomTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), Color.White);
-            }
-        }
-
-        public void DrawSides(SpriteBatch spriteBatch, int i, int j)
-        {
-            if (Base.DrawSides(spriteBatch, i, j) && borderingEmpty)
-            {
-                Rectangle rect1 = Base.DrawRect();//gets the draw rect
-                Point drawPos = (rect1.Location + new Point(i, j).MultBy(TileHandler.tileSize));
-                Point drawSize = (TileHandler.WallSideTexture[type].Size() * GameMain.spriteScaling).ToPoint();
-
-                spriteBatch.Draw(TileHandler.WallSideTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(TileHandler.WallSideTexture[type].Width, 0), default, default);
-                spriteBatch.Draw(TileHandler.WallSideTexture[type], new Rectangle(drawPos, drawSize).WorldToScreenCoords(), null, Color.White, default, new Vector2(-rect1.Size.X / 2, 0), SpriteEffects.FlipHorizontally, default);
-            }
-        }
-
-        public void PostDraw(SpriteBatch spriteBatch, int i, int j) =>
-            Base.PostDraw(spriteBatch, i, j);
     }
 
     public struct FloorTile
     {
-        public FloorTile(int tileType = 0) { type = tileType; }
-        public FloorBase Base { get => TileHandler.FloorBases[type]; }
         public int type;
-        public void Draw(SpriteBatch spriteBatch, int i, int j)
-        {
-            if (Base.Draw(spriteBatch, i, j))//if this tile should be drawn
-            {
-                Rectangle rect1 = Base.DrawRect();//gets the draw rect, defaults to the collision rect unless overridden 
-                Vector2 drawPos = (rect1.Location.ToVector2() + (new Vector2(i, j) * TileHandler.tileSize));
-                Vector2 drawSize = (rect1.Size.ToVector2() / TileHandler.tileSize);
-                spriteBatch.Draw(TileHandler.FloorTexture[type], drawPos.WorldToScreenCoords(), null, Color.LightGray, default, default, drawSize * GameMain.spriteScaling, default, default);
-            }
-        }
-        public void PostDraw(SpriteBatch spriteBatch, int i, int j) =>
-            Base.PostDraw(spriteBatch, i, j);
+        public FloorTile(int tileType = 0) => type = tileType;
+        public FloorBase Base { get => TileHandler.FloorBases[type]; }
     }
+    #endregion
 }
