@@ -30,8 +30,12 @@
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Gravel.png</File>
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Outline.png</File>
     <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Stone.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Stone_Bottom.png</File>
+    <File>D:/Documents/ProjectMove/Content/Tiles/Textures/Stone_Side.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

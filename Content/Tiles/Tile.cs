@@ -187,8 +187,8 @@ namespace ProjectMove.Content.Tiles
 
         public virtual bool HasSides() => true;
         public virtual bool HasBottom() => true;
-        public virtual string SideTextureName() { return null; }
-        public virtual string BottomTextureName() { return null; }
+        public virtual string SideTextureName() => null;
+        public virtual string BottomTextureName() => null;
         public virtual bool DrawSides(SpriteBatch spriteBatch, int i, int j) => HasSides();
         public virtual bool DrawBottom(SpriteBatch spriteBatch, int i, int j) => HasBottom();
         public virtual new void Load()

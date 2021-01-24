@@ -54,3 +54,5 @@ D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Blank.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Brick_Bottom.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Brick_Side.xnb
 D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Outline.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Stone_Bottom.xnb
+D:\Documents\ProjectMove\bin\Debug\netcoreapp3.1\Content\Tiles\Textures\Stone_Side.xnb

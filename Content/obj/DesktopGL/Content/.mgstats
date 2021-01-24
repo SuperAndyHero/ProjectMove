@@ -25,3 +25,5 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Documents/ProjectMove/Content/Tiles/Textures/Gravel.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Gravel.xnb","TextureProcessor","Texture2DContent",277,1109,0.0019543
 "D:/Documents/ProjectMove/Content/Tiles/Textures/Outline.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Outline.xnb","TextureProcessor","Texture2DContent",154,1381,0.1834531
 "D:/Documents/ProjectMove/Content/Tiles/Textures/Stone.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Stone.xnb","TextureProcessor","Texture2DContent",247,1109,0.0015575
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Stone_Bottom.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Stone_Bottom.xnb","TextureProcessor","Texture2DContent",228,725,0.6558792
+"D:/Documents/ProjectMove/Content/Tiles/Textures/Stone_Side.png","D:/Documents/ProjectMove/Content/bin/DesktopGL/Content/Tiles/Textures/Stone_Side.xnb","TextureProcessor","Texture2DContent",280,501,0.0096916
